@@ -11,12 +11,13 @@ angular.module('myApp', ['ui.router', 'ngMaterial', 'ngMessages'])
                         templateUrl : 'header.html',
                         controller  : 'HeaderCtrl'
                     },
+                    'world': {
+                        templateUrl : 'scene.html',
+                        controller  : 'SceneCtrl'
+                    },
                     'content': {
                         templateUrl : 'home.html',
                         controller  : 'HomeCtrl'
-                    },
-                    'footer': {
-                        template : '<div></div>',
                     }
                 }
 
