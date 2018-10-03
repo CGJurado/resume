@@ -2,10 +2,17 @@
 <html lang="en" ng-app="myApp">
     <head>
         <title>Resume</title>
+        <!-- build:css styles/main.css -->
         <link href="styles/main.css" rel="stylesheet">
+        <!-- endbuild -->
     </head>
     <body>
-        <ng-view class="view"></ng-view>
+        <div ui-view="header"></div>
+        <div ui-view="content"></div>
+        <div ui-view="footer"></div>
+
+        <!-- build:js scripts/main.js -->
+        <script src="scripts/main.js"></script>
+        <!-- endbuild -->
     </body>
-    <script src="scripts/main.js"></script>
 </html>
