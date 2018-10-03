@@ -1,0 +1,14 @@
+<div ng-cloak>
+    <md-content>
+        <md-nav-bar md-no-ink-bar="disableInkBar" md-selected-nav-item="currentNavItem" nav-bar-aria-label="navigation links">
+
+            <md-nav-item md-nav-click="goto('app')" name="app" aria-label="Go Home">
+            Home
+            </md-nav-item>
+            <md-nav-item md-nav-click="goto('app.aboutme')" name="app.aboutme" ng-disabled="secondTabDisabled" aria-label="Go to self description">
+            Myself
+            </md-nav-item>
+
+        </md-nav-bar>
+    </md-content>
+</div>
