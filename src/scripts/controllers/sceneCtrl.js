@@ -1,45 +1,29 @@
 angular.module('myApp')
 .controller('SceneCtrl', [
-    '$scope', 
-    function($scope){
-        var camera, scene, renderer;
-        var geometry, material, mesh;
+    '$scope',
+    'sceneFactory',
+    'meshFactory',
+    function($scope, sceneFactory, meshFactory){
         
-        var container = document.querySelector('.three');
-        var height = container.clientHeight;
-        var aspect = container.clientWidth / height;
+        sceneFactory.init();
+        sceneFactory.render();
 
-        init();
-        animate();
+        var cube = meshFactory.cube();
+        var line = meshFactory.line();
+        var hearts = [];        
 
-        function init() {
-
-            camera = new THREE.PerspectiveCamera( 70, aspect, 0.01, 10 );
-            camera.position.z = 1;
-
-            scene = new THREE.Scene();
-
-            geometry = new THREE.BoxGeometry( 0.2, 0.2, 0.2 );
-            material = new THREE.MeshNormalMaterial();
-
-            mesh = new THREE.Mesh( geometry, material );
-            scene.add( mesh );
-
-            renderer = new THREE.WebGLRenderer( { antialias: true } );
-            renderer.setSize( container.clientWidth, height );
-            container.appendChild( renderer.domElement );
-
+        for(var i = 0; i < 40; i++){
+            hearts.push(meshFactory.heart());
+            hearts[i].animations.push('moveInfRight');
+            hearts[i].animations.push('moveInfUp');
+            hearts[i].animations.push('rotate');
+            sceneFactory.add(hearts[i]);
         }
 
-        function animate() {
+        sceneFactory.add(meshFactory.heart());
+        sceneFactory.add(cube);
+        sceneFactory.add(line);
 
-            requestAnimationFrame( animate );
-
-            mesh.rotation.x += 0.01;
-            mesh.rotation.y += 0.02;
-
-            renderer.render( scene, camera );
-
-        }
+        cube.animations.push('rotate');
     }
 ]);
