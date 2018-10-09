@@ -31,12 +31,6 @@ angular.module('myApp')
                 }
 
             },
-            add: (newMesh) =>{
-                console.log('something was "added"');
-
-                meshes.push(newMesh);
-                scene.add( newMesh.body );
-            },
             render: () =>{
                 
                 animate()
@@ -58,6 +52,12 @@ angular.module('myApp')
                     renderer.render( scene, camera );
 
                 }
+            },
+            add: (newMesh) =>{
+                console.log('something was "added"');
+
+                meshes.push(newMesh);
+                scene.add( newMesh.body );
             }
         }
 

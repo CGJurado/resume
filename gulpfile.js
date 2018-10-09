@@ -28,14 +28,22 @@ gulp.task('js', () =>{
 
 gulp.task('html', () =>{
     gulp.src('./src/views/**/*.html')
-    .pipe(gulp.dest('./dist/'))
-    .pipe(browserSync.reload({
-        stream: true
+        .pipe(gulp.dest('./dist/'))
+        .pipe(browserSync.reload({
+            stream: true
     }));
 });
 
+gulp.task('json', () =>{
+    gulp.src('./src/models/**/*.*')
+        .pipe(gulp.dest('./dist/models'))
+        .pipe(browserSync.reload({
+            stream: true
+        }));
+});
+
 gulp.task('build', () =>{
-    gulp.start(['css', 'js', 'html']);
+    gulp.start(['css', 'js', 'html', 'json']);
 });
 
 gulp.task('browser-sync', () =>{
@@ -53,4 +61,5 @@ gulp.task('start', () => {
     gulp.watch(['./src/styles/**/*.css'], ['css']);
     gulp.watch(['./src/scripts/**/*.js'], ['js']);
     gulp.watch(['./src/views/**/*.html'], ['html']);
+    gulp.watch(['./src/models/**/*.json'], ['json']);
 });

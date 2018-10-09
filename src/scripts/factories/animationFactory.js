@@ -3,7 +3,7 @@ angular.module('myApp')
 .factory('animationFactory', [
     function(){
 
-        function findAni(aniArr, aniName){
+        function findAni(aniArr, aniName){//Search if the recieved mesh has the desired animation
             var found = aniArr.find(function(element) {
                 return element === aniName;
             });
@@ -14,13 +14,13 @@ angular.module('myApp')
         }
 
         var animations = {
-            rotate: (mesh) =>{
+            rotate: (mesh) =>{//Rotates slowly an object
                 findAni(mesh.animations, 'rotate');
 
                 mesh.body.rotation.x += 0.01;
                 mesh.body.rotation.y += 0.02;
             },
-            moveInfRight: (mesh) =>{
+            moveInfRight: (mesh) =>{//Move infinitly to the right
                 findAni(mesh.animations, 'moveInfRight');
 
                 mesh.body.position.x += 0.6;
@@ -28,7 +28,7 @@ angular.module('myApp')
                     mesh.body.position.x = -380;
                 }
             },
-            moveInfUp: (mesh) =>{
+            moveInfUp: (mesh) =>{//Move infinitly up
                 findAni(mesh.animations, 'moveInfRight');
 
                 mesh.body.position.y += 0.4;
@@ -39,7 +39,7 @@ angular.module('myApp')
         }
 
         var obj = {
-            runAni: (mesh) =>{
+            runAni: (mesh) =>{//Execute each animation in the mesh
                 mesh.animations.forEach(element => {
                     animations[element](mesh);
                 });

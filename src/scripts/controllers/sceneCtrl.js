@@ -10,9 +10,18 @@ angular.module('myApp')
 
         var cube = meshFactory.cube();
         var line = meshFactory.line();
-        var hearts = [];        
+        var hearts = [];
+        var diamonds = [];
 
-        for(var i = 0; i < 40; i++){
+        var monkey = meshFactory.monkey();
+        monkey.then(function(mesh) {
+            mesh.animations.push('rotate');
+            sceneFactory.add(mesh);
+        }, function(reason) {
+            console.log('Failed: '+ reason);
+        });
+
+        for(var i = 0; i < 20; i++){
             hearts.push(meshFactory.heart());
             hearts[i].animations.push('moveInfRight');
             hearts[i].animations.push('moveInfUp');
@@ -20,7 +29,14 @@ angular.module('myApp')
             sceneFactory.add(hearts[i]);
         }
 
-        sceneFactory.add(meshFactory.heart());
+        for(var i = 0; i < 20; i++){
+            diamonds.push(meshFactory.diamond());
+            diamonds[i].animations.push('moveInfRight');
+            diamonds[i].animations.push('moveInfUp');
+            diamonds[i].animations.push('rotate');
+            sceneFactory.add(diamonds[i]);
+        }
+
         sceneFactory.add(cube);
         sceneFactory.add(line);
 

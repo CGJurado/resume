@@ -1,7 +1,8 @@
 angular.module('myApp')
 
 .factory('meshFactory', [
-    function(){
+    '$q',
+    function($q){
 
         var obj = {
             cube: () =>{                
@@ -26,7 +27,7 @@ angular.module('myApp')
                 var mesh = {
                     body: new THREE.Mesh( geometry, material ),
                     animations: []
-                };        
+                };
                 mesh.body.position.x = -100;
 
                 return mesh;
@@ -46,25 +47,132 @@ angular.module('myApp')
                 heartShape.bezierCurveTo( x + 12, y + 15.4, x + 16, y + 11, x + 16, y + 7 );
                 heartShape.bezierCurveTo( x + 16, y + 7, x + 16, y, x + 10, y );
                 heartShape.bezierCurveTo( x + 7, y, x + 5, y + 5, x + 5, y + 5 );
+
+                var extrudeSettings = {
+                    depth: 2,
+                    bevelEnabled: true,
+                    bevelSegments: 1,
+                    steps: 2,
+                    bevelSize: 1,
+                    bevelThickness: 1
+                };
                 
-                var geometry = new THREE.ShapeGeometry( heartShape );
+                var geometry = new THREE.ExtrudeGeometry( heartShape, extrudeSettings );
                 var material = new THREE.MeshNormalMaterial();
                 var mesh = {
                     body: new THREE.Mesh( geometry, material ),
                     animations: []
                 };
-                mesh.body.position.x = -100;
 
+                mesh.body.position.x = Math.floor(Math.random()*680)-340;
+                mesh.body.position.y = Math.floor(Math.random()*100)-100;
+                mesh.body.position.z = Math.floor(Math.random()*400)-200;
+                mesh.body.rotation.x += Math.random();
+                mesh.body.rotation.y += Math.random();                
+
+                return mesh;
+
+            },
+            diamond: () =>{
+                console.log('diamond++');
+                
+                var vectors = [];
+                var a = new THREE.Vector2(0,-20);
+                var b = new THREE.Vector2(10,0);
+                var c = new THREE.Vector2(0,20);
+                var d = new THREE.Vector2(-10,0);
+                vectors = [a,b,c,d];
+
+                var diamondShape = new THREE.Shape(vectors);
+
+                var extrudeSettings = {
+                    depth: 2,
+                    bevelEnabled: true,
+                    bevelSegments: 1,
+                    steps: 2,
+                    bevelSize: 1,
+                    bevelThickness: 1
+                };
+                
+                var geometry = new THREE.ExtrudeGeometry( diamondShape, extrudeSettings );
+                var material = new THREE.MeshNormalMaterial();
+                var mesh = {
+                    body: new THREE.Mesh( geometry, material ),
+                    animations: []
+                };
+                // mesh.body.position.x = -100;
                 mesh.body.position.x = Math.floor(Math.random()*680)-340;
                 mesh.body.position.y = Math.floor(Math.random()*100)-100;
                 mesh.body.position.z = Math.floor(Math.random()*400)-200;
                 mesh.body.rotation.x += Math.random();
                 mesh.body.rotation.y += Math.random();
 
-                
-
                 return mesh;
+            },
+            spades: () =>{
+                return $q((resolve, reject) =>{
 
+                    var loader = new THREE.GLTFLoader();
+                    // Load a glTF resource
+                    loader.load(
+                        // resource URL
+                        './models/bigsquare.gltf',
+                        // called when the resource is loaded
+                        function ( gltf ) {
+                            console.log('spade++');
+                            
+                            var scene = gltf.scene;
+                            // console.log(scene);
+                            var mesh = {
+                                body: scene.children[0],
+                                animations: []
+                            };
+                            mesh.body.position.x = -100;
+                            console.log(mesh.body);
+                            resolve(mesh);
+                        },
+                        // called while loading is progressing
+                        function ( xhr ) {
+                    
+                            console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+                    
+                        },
+                        // called when loading has errors
+                        function ( error ) {
+                    
+                            reject( 'An error happened' );
+                    
+                        }
+                    );
+                    
+                });
+            },
+            monkey: () =>{
+                
+                return $q((resolve, reject) =>{
+                    var loader = new THREE.JSONLoader();
+                    loader.load('./models/monkey.json',
+                        function(geometry, m){
+                            console.log('monkey++');
+
+                            var material = new THREE.MeshNormalMaterial();
+                            var mesh = {
+                                body: new THREE.Mesh( geometry, material ),
+                                animations: []
+                            };
+                            mesh.body.position.x = -100;
+                            resolve(mesh);
+                        },
+                        // called while loading is progressing
+                        function ( xhr ) {                    
+                            console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );                    
+                        },
+                        // called when loading has errors
+                        function ( error ) {                    
+                            reject( 'An error happened' );                    
+                        }
+                    );
+                });
             },
             line: () =>{
                 console.log('line++');
