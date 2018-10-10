@@ -57,7 +57,8 @@ angular.module('myApp')
                     bevelThickness: 1
                 };
                 
-                var geometry = new THREE.ExtrudeGeometry( heartShape, extrudeSettings );
+                var preGeometry = new THREE.ExtrudeGeometry( heartShape, extrudeSettings );
+                var geometry = preGeometry.scale(0.5,0.5,0.5);
                 var material = new THREE.MeshNormalMaterial();
                 var mesh = {
                     body: new THREE.Mesh( geometry, material ),
@@ -94,7 +95,8 @@ angular.module('myApp')
                     bevelThickness: 1
                 };
                 
-                var geometry = new THREE.ExtrudeGeometry( diamondShape, extrudeSettings );
+                var preGeometry = new THREE.ExtrudeGeometry( diamondShape, extrudeSettings );
+                var geometry = preGeometry.scale(0.3,0.3,0.3);
                 var material = new THREE.MeshNormalMaterial();
                 var mesh = {
                     body: new THREE.Mesh( geometry, material ),

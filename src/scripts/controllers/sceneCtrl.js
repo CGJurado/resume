@@ -14,8 +14,9 @@ angular.module('myApp')
         var diamonds = [];
         var spades = [];
 
-        var getSpade = meshFactory.spades();
-        getSpade.then(function(mesh) {
+        //<<< Loading models from json files >>>
+        //Creating & Adding Spades
+        meshFactory.spades().then(function(mesh) {
             for(var i = 0; i <  20; i++){
                 spades.push({
                     body: mesh.body.clone(),
@@ -31,14 +32,17 @@ angular.module('myApp')
         }, function(reason) {
             console.log('Failed: '+ reason);
         });
-
+        //Creating & Adding Sussane
         meshFactory.monkey().then(function(mesh){
             mesh.animations.push('rotate');
             sceneFactory.add(mesh);
         }, function(reason){
             console.log('Failed: '+ reason);
         });
+        //<<< END of Load>>>
 
+        //<<< Adding models with threejs code >>>
+        //Creating & Adding Hearts
         for(var i = 0; i < 20; i++){
             hearts.push(meshFactory.heart());
             hearts[i].animations.push('moveInfRight');
@@ -46,7 +50,7 @@ angular.module('myApp')
             hearts[i].animations.push('rotate');
             sceneFactory.add(hearts[i]);
         }
-
+        //Creating & Adding Diamonds
         for(var i = 0; i < 20; i++){
             diamonds.push(meshFactory.diamond());
             diamonds[i].animations.push('moveInfRight');
@@ -54,6 +58,7 @@ angular.module('myApp')
             diamonds[i].animations.push('rotate');
             sceneFactory.add(diamonds[i]);
         }
+        //<<< END of Add>>>
 
         sceneFactory.add(cube);
         sceneFactory.add(line);
