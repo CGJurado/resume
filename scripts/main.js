@@ -91677,12 +91677,30 @@ angular.module('myApp')
         var line = meshFactory.line();
         var hearts = [];
         var diamonds = [];
+        var spades = [];
 
-        var monkey = meshFactory.monkey();
-        monkey.then(function(mesh) {
+        var getSpade = meshFactory.spades();
+        getSpade.then(function(mesh) {
+            for(var i = 0; i <  20; i++){
+                spades.push({
+                    body: mesh.body.clone(),
+                    animations: ['moveInfRight', 'moveInfUp', 'rotate']
+                });
+                spades[i].body.position.x = Math.floor(Math.random()*680)-340;
+                spades[i].body.position.y = Math.floor(Math.random()*100)-100;
+                spades[i].body.position.z = Math.floor(Math.random()*400)-200;
+                spades[i].body.rotation.x += Math.random();
+                spades[i].body.rotation.y += Math.random();
+                sceneFactory.add(spades[i]);
+            }
+        }, function(reason) {
+            console.log('Failed: '+ reason);
+        });
+
+        meshFactory.monkey().then(function(mesh){
             mesh.animations.push('rotate');
             sceneFactory.add(mesh);
-        }, function(reason) {
+        }, function(reason){
             console.log('Failed: '+ reason);
         });
 
@@ -91873,23 +91891,27 @@ angular.module('myApp')
             spades: () =>{
                 return $q((resolve, reject) =>{
 
-                    var loader = new THREE.GLTFLoader();
+                    var loader = new THREE.JSONLoader();
                     // Load a glTF resource
                     loader.load(
                         // resource URL
-                        './models/bigsquare.gltf',
+                        './models/spades.json',
                         // called when the resource is loaded
-                        function ( gltf ) {
+                        function(geometry, m){
                             console.log('spade++');
                             
-                            var scene = gltf.scene;
-                            // console.log(scene);
+                            var material = new THREE.MeshNormalMaterial();
                             var mesh = {
-                                body: scene.children[0],
+                                body: new THREE.Mesh( geometry, material ),
                                 animations: []
                             };
-                            mesh.body.position.x = -100;
-                            console.log(mesh.body);
+                            // mesh.body.position.x = -100;
+                            mesh.body.position.x = Math.floor(Math.random()*680)-340;
+                            mesh.body.position.y = Math.floor(Math.random()*100)-100;
+                            mesh.body.position.z = Math.floor(Math.random()*400)-200;
+                            mesh.body.rotation.x += Math.random();
+                            mesh.body.rotation.y += Math.random();
+
                             resolve(mesh);
                         },
                         // called while loading is progressing
