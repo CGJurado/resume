@@ -112,23 +112,27 @@ angular.module('myApp')
             spades: () =>{
                 return $q((resolve, reject) =>{
 
-                    var loader = new THREE.GLTFLoader();
+                    var loader = new THREE.JSONLoader();
                     // Load a glTF resource
                     loader.load(
                         // resource URL
-                        './models/bigsquare.gltf',
+                        './models/spades.json',
                         // called when the resource is loaded
-                        function ( gltf ) {
+                        function(geometry, m){
                             console.log('spade++');
                             
-                            var scene = gltf.scene;
-                            // console.log(scene);
+                            var material = new THREE.MeshNormalMaterial();
                             var mesh = {
-                                body: scene.children[0],
+                                body: new THREE.Mesh( geometry, material ),
                                 animations: []
                             };
-                            mesh.body.position.x = -100;
-                            console.log(mesh.body);
+                            // mesh.body.position.x = -100;
+                            mesh.body.position.x = Math.floor(Math.random()*680)-340;
+                            mesh.body.position.y = Math.floor(Math.random()*100)-100;
+                            mesh.body.position.z = Math.floor(Math.random()*400)-200;
+                            mesh.body.rotation.x += Math.random();
+                            mesh.body.rotation.y += Math.random();
+
                             resolve(mesh);
                         },
                         // called while loading is progressing

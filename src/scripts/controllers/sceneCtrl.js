@@ -12,12 +12,30 @@ angular.module('myApp')
         var line = meshFactory.line();
         var hearts = [];
         var diamonds = [];
+        var spades = [];
 
-        var monkey = meshFactory.monkey();
-        monkey.then(function(mesh) {
+        var getSpade = meshFactory.spades();
+        getSpade.then(function(mesh) {
+            for(var i = 0; i <  20; i++){
+                spades.push({
+                    body: mesh.body.clone(),
+                    animations: ['moveInfRight', 'moveInfUp', 'rotate']
+                });
+                spades[i].body.position.x = Math.floor(Math.random()*680)-340;
+                spades[i].body.position.y = Math.floor(Math.random()*100)-100;
+                spades[i].body.position.z = Math.floor(Math.random()*400)-200;
+                spades[i].body.rotation.x += Math.random();
+                spades[i].body.rotation.y += Math.random();
+                sceneFactory.add(spades[i]);
+            }
+        }, function(reason) {
+            console.log('Failed: '+ reason);
+        });
+
+        meshFactory.monkey().then(function(mesh){
             mesh.animations.push('rotate');
             sceneFactory.add(mesh);
-        }, function(reason) {
+        }, function(reason){
             console.log('Failed: '+ reason);
         });
 
