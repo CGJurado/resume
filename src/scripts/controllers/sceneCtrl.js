@@ -13,6 +13,7 @@ angular.module('myApp')
         var hearts = [];
         var diamonds = [];
         var spades = [];
+        var clovers = [];
 
         //<<< Loading models from json files >>>
         //Creating & Adding Spades
@@ -28,6 +29,23 @@ angular.module('myApp')
                 spades[i].body.rotation.x += Math.random();
                 spades[i].body.rotation.y += Math.random();
                 sceneFactory.add(spades[i]);
+            }
+        }, function(reason) {
+            console.log('Failed: '+ reason);
+        });
+        //Creating & Adding Clovers
+        meshFactory.clover().then(function(mesh) {
+            for(var i = 0; i <  20; i++){
+                clovers.push({
+                    body: mesh.body.clone(),
+                    animations: ['moveInfRight', 'moveInfUp', 'rotate']
+                });
+                clovers[i].body.position.x = Math.floor(Math.random()*680)-340;
+                clovers[i].body.position.y = Math.floor(Math.random()*100)-100;
+                clovers[i].body.position.z = Math.floor(Math.random()*400)-200;
+                clovers[i].body.rotation.x += Math.random();
+                clovers[i].body.rotation.y += Math.random();
+                sceneFactory.add(clovers[i]);
             }
         }, function(reason) {
             console.log('Failed: '+ reason);

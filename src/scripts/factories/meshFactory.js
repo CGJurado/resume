@@ -153,6 +153,48 @@ angular.module('myApp')
                     
                 });
             },
+            clover: () =>{
+                return $q((resolve, reject) =>{
+
+                    var loader = new THREE.JSONLoader();
+                    // Load a glTF resource
+                    loader.load(
+                        // resource URL
+                        './models/clover.json',
+                        // called when the resource is loaded
+                        function(geometry, m){
+                            console.log('clover++');
+                            
+                            var material = new THREE.MeshNormalMaterial();
+                            var mesh = {
+                                body: new THREE.Mesh( geometry, material ),
+                                animations: []
+                            };
+                            // mesh.body.position.x = -100;
+                            mesh.body.position.x = Math.floor(Math.random()*680)-340;
+                            mesh.body.position.y = Math.floor(Math.random()*100)-100;
+                            mesh.body.position.z = Math.floor(Math.random()*400)-200;
+                            mesh.body.rotation.x += Math.random();
+                            mesh.body.rotation.y += Math.random();
+
+                            resolve(mesh);
+                        },
+                        // called while loading is progressing
+                        function ( xhr ) {
+                    
+                            console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+                    
+                        },
+                        // called when loading has errors
+                        function ( error ) {
+                    
+                            reject( 'An error happened' );
+                    
+                        }
+                    );
+                    
+                });
+            },
             monkey: () =>{
                 
                 return $q((resolve, reject) =>{

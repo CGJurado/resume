@@ -90624,7 +90624,10 @@ angular.module('myApp')
         var hearts = [];
         var diamonds = [];
         var spades = [];
+        var clovers = [];
 
+        //<<< Loading models from json files >>>
+        //Creating & Adding Spades
         meshFactory.spades().then(function(mesh) {
             for(var i = 0; i <  20; i++){
                 spades.push({
@@ -90641,6 +90644,23 @@ angular.module('myApp')
         }, function(reason) {
             console.log('Failed: '+ reason);
         });
+        //Creating & Adding Clovers
+        meshFactory.clover().then(function(mesh) {
+            for(var i = 0; i <  20; i++){
+                clovers.push({
+                    body: mesh.body.clone(),
+                    animations: ['moveInfRight', 'moveInfUp', 'rotate']
+                });
+                clovers[i].body.position.x = Math.floor(Math.random()*680)-340;
+                clovers[i].body.position.y = Math.floor(Math.random()*100)-100;
+                clovers[i].body.position.z = Math.floor(Math.random()*400)-200;
+                clovers[i].body.rotation.x += Math.random();
+                clovers[i].body.rotation.y += Math.random();
+                sceneFactory.add(clovers[i]);
+            }
+        }, function(reason) {
+            console.log('Failed: '+ reason);
+        });
         //Creating & Adding Sussane
         meshFactory.monkey().then(function(mesh){
             mesh.animations.push('rotate');
@@ -90648,7 +90668,9 @@ angular.module('myApp')
         }, function(reason){
             console.log('Failed: '+ reason);
         });
+        //<<< END of Load>>>
 
+        //<<< Adding models with threejs code >>>
         //Creating & Adding Hearts
         for(var i = 0; i < 20; i++){
             hearts.push(meshFactory.heart());
@@ -90665,6 +90687,7 @@ angular.module('myApp')
             diamonds[i].animations.push('rotate');
             sceneFactory.add(diamonds[i]);
         }
+        //<<< END of Add>>>
 
         sceneFactory.add(cube);
         sceneFactory.add(line);
@@ -90847,6 +90870,48 @@ angular.module('myApp')
                         // called when the resource is loaded
                         function(geometry, m){
                             console.log('spade++');
+                            
+                            var material = new THREE.MeshNormalMaterial();
+                            var mesh = {
+                                body: new THREE.Mesh( geometry, material ),
+                                animations: []
+                            };
+                            // mesh.body.position.x = -100;
+                            mesh.body.position.x = Math.floor(Math.random()*680)-340;
+                            mesh.body.position.y = Math.floor(Math.random()*100)-100;
+                            mesh.body.position.z = Math.floor(Math.random()*400)-200;
+                            mesh.body.rotation.x += Math.random();
+                            mesh.body.rotation.y += Math.random();
+
+                            resolve(mesh);
+                        },
+                        // called while loading is progressing
+                        function ( xhr ) {
+                    
+                            console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+                    
+                        },
+                        // called when loading has errors
+                        function ( error ) {
+                    
+                            reject( 'An error happened' );
+                    
+                        }
+                    );
+                    
+                });
+            },
+            clover: () =>{
+                return $q((resolve, reject) =>{
+
+                    var loader = new THREE.JSONLoader();
+                    // Load a glTF resource
+                    loader.load(
+                        // resource URL
+                        './models/clover.json',
+                        // called when the resource is loaded
+                        function(geometry, m){
+                            console.log('clover++');
                             
                             var material = new THREE.MeshNormalMaterial();
                             var mesh = {
