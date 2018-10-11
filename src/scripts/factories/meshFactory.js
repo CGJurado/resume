@@ -196,6 +196,7 @@ angular.module('myApp')
                 });
             },
             monkey: () =>{
+                console.log('sussane++');
                 
                 return $q((resolve, reject) =>{
                     var loader = new THREE.JSONLoader();

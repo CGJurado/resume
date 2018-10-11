@@ -90614,85 +90614,105 @@ angular.module('myApp')
     '$scope',
     'sceneFactory',
     'meshFactory',
-    function($scope, sceneFactory, meshFactory){
+    '$document',
+    function($scope, sceneFactory, meshFactory, $document){
         
-        sceneFactory.init();
-        sceneFactory.render();
-
         var cube = meshFactory.cube();
         var line = meshFactory.line();
+        var sussane;
         var hearts = [];
         var diamonds = [];
-        var spades = [];
-        var clovers = [];
 
-        //<<< Loading models from json files >>>
-        //Creating & Adding Spades
-        meshFactory.spades().then(function(mesh) {
-            for(var i = 0; i <  20; i++){
-                spades.push({
-                    body: mesh.body.clone(),
-                    animations: ['moveInfRight', 'moveInfUp', 'rotate']
-                });
-                spades[i].body.position.x = Math.floor(Math.random()*680)-340;
-                spades[i].body.position.y = Math.floor(Math.random()*100)-100;
-                spades[i].body.position.z = Math.floor(Math.random()*400)-200;
-                spades[i].body.rotation.x += Math.random();
-                spades[i].body.rotation.y += Math.random();
-                sceneFactory.add(spades[i]);
+        var meshCount = 20;
+        //<<< When document is ready add models to the scene
+        $document.ready(function(){
+
+            //<<< Loading models from json files >>>
+                
+            meshFactory.spades().then(function(mesh) {//Creating Spades
+                sceneFactory.addN(meshCount, mesh);
+            }, function(reason) {
+                console.log('Failed: '+ reason);
+            });
+                
+            meshFactory.clover().then(function(mesh) {//Creating Clovers
+                sceneFactory.addN(meshCount, mesh);
+            }, function(reason) {
+                console.log('Failed: '+ reason);
+            });
+                
+            meshFactory.monkey().then(function(mesh){//Creating Sussane
+                mesh.animations.push('rotate');
+                sussane = mesh;
+                sceneFactory.add(sussane);
+            }, function(reason){
+                console.log('Failed: '+ reason);
+            });
+            //<<< END of Load>>>
+
+            //<<< Creating models with threejs code >>>
+                
+            for(var i = 0; i < meshCount; i++){//Creating Hearts
+                hearts.push(meshFactory.heart());
+                hearts[i].animations.push('moveInfRight');
+                hearts[i].animations.push('moveInfUp');
+                hearts[i].animations.push('rotate');
             }
-        }, function(reason) {
-            console.log('Failed: '+ reason);
-        });
-        //Creating & Adding Clovers
-        meshFactory.clover().then(function(mesh) {
-            for(var i = 0; i <  20; i++){
-                clovers.push({
-                    body: mesh.body.clone(),
-                    animations: ['moveInfRight', 'moveInfUp', 'rotate']
-                });
-                clovers[i].body.position.x = Math.floor(Math.random()*680)-340;
-                clovers[i].body.position.y = Math.floor(Math.random()*100)-100;
-                clovers[i].body.position.z = Math.floor(Math.random()*400)-200;
-                clovers[i].body.rotation.x += Math.random();
-                clovers[i].body.rotation.y += Math.random();
-                sceneFactory.add(clovers[i]);
+                
+            for(var i = 0; i < meshCount; i++){//Creating Diamonds
+                diamonds.push(meshFactory.diamond());
+                diamonds[i].animations.push('moveInfRight');
+                diamonds[i].animations.push('moveInfUp');
+                diamonds[i].animations.push('rotate');
             }
-        }, function(reason) {
-            console.log('Failed: '+ reason);
+            //<<< END of Create>>>
+
+            sceneFactory.addMeshArray(hearts);
+            sceneFactory.addMeshArray(diamonds);
+
+            sceneFactory.add(cube);
+            sceneFactory.add(line);
+
+            cube.animations.push('rotate');
         });
-        //Creating & Adding Sussane
-        meshFactory.monkey().then(function(mesh){
-            mesh.animations.push('rotate');
-            sceneFactory.add(mesh);
-        }, function(reason){
-            console.log('Failed: '+ reason);
-        });
-        //<<< END of Load>>>
+        //<<< END of Add
+    }
+]);
+angular.module('myApp')
+.directive('sceneDirective',[
+    'sceneFactory',
+    '$document',
+    function(sceneFactory, $document){
+        return {
+            restrict: 'AE',
+            link: function(scope, element, attrs){
+                
+                sceneFactory.init(element[0]);
+                sceneFactory.render();
 
-        //<<< Adding models with threejs code >>>
-        //Creating & Adding Hearts
-        for(var i = 0; i < 20; i++){
-            hearts.push(meshFactory.heart());
-            hearts[i].animations.push('moveInfRight');
-            hearts[i].animations.push('moveInfUp');
-            hearts[i].animations.push('rotate');
-            sceneFactory.add(hearts[i]);
+                var headerContainer = $document[0].querySelector('div[ui-view="header"]');
+                var height = element[0].offsetHeight;
+                var width = element[0].offsetWidth;
+        
+                element.bind('mousedown', function(event){
+                    event.stopPropagation();
+                    
+                    var clientY = event.clientY - headerContainer.clientHeight;
+                    var mouse2D = new THREE.Vector2( ( event.clientX / width ) * 2 - 1,
+                                                    -( clientY / height ) * 2 + 1);
+                    var raycaster =  new THREE.Raycaster();
+                    raycaster.setFromCamera( mouse2D, sceneFactory.getCamera() );
+        
+                    var intersects = raycaster.intersectObjects( sceneFactory.getSceneChildren() );
+        
+                    if ( intersects.length > 0 ) {
+                        intersects[0].object.scale.x++;
+                        intersects[0].object.scale.y++;
+                        intersects[0].object.scale.z++;
+                    }
+                });
+            }
         }
-        //Creating & Adding Diamonds
-        for(var i = 0; i < 20; i++){
-            diamonds.push(meshFactory.diamond());
-            diamonds[i].animations.push('moveInfRight');
-            diamonds[i].animations.push('moveInfUp');
-            diamonds[i].animations.push('rotate');
-            sceneFactory.add(diamonds[i]);
-        }
-        //<<< END of Add>>>
-
-        sceneFactory.add(cube);
-        sceneFactory.add(line);
-
-        cube.animations.push('rotate');
     }
 ]);
 angular.module('myApp')
@@ -90944,6 +90964,7 @@ angular.module('myApp')
                 });
             },
             monkey: () =>{
+                console.log('sussane++');
                 
                 return $q((resolve, reject) =>{
                     var loader = new THREE.JSONLoader();
@@ -90998,25 +91019,22 @@ angular.module('myApp')
         
         var camera, scene, renderer, controls;
         var meshes = [];
-        
-        var container = document.querySelector('.three');
-        var height = container.clientHeight;
-        var aspect = container.clientWidth / height;
 
         var obj = {
-            init: () =>{
+            init: (container) =>{
 
                 init();
 
                 function init() {
-
+                    
+                    var aspect = container.clientWidth / container.clientHeight;
                     camera = new THREE.PerspectiveCamera( 75, aspect, 0.1, 1000 );
                     camera.position.z = 70;
 
                     scene = new THREE.Scene();
 
                     renderer = new THREE.WebGLRenderer( { antialias: true } );
-                    renderer.setSize( container.clientWidth, height );
+                    renderer.setSize( container.clientWidth, container.clientHeight );
                     container.appendChild( renderer.domElement );
                     controls = new THREE.OrbitControls( camera, renderer.domElement );
 
@@ -91050,6 +91068,39 @@ angular.module('myApp')
 
                 meshes.push(newMesh);
                 scene.add( newMesh.body );
+            },
+            addN: (n, newMesh) =>{
+                console.log('adding '+ n+ ' meshes');
+
+                var newMeshArr = [];
+                for(var i = 0; i <  n; i++){
+                    newMeshArr.push({
+                        body: newMesh.body.clone(),
+                        animations: ['moveInfRight', 'moveInfUp', 'rotate']
+                    });
+                    newMeshArr[i].body.position.x = Math.floor(Math.random()*680)-340;
+                    newMeshArr[i].body.position.y = Math.floor(Math.random()*100)-100;
+                    newMeshArr[i].body.position.z = Math.floor(Math.random()*400)-200;
+                    newMeshArr[i].body.rotation.x += Math.random();
+                    newMeshArr[i].body.rotation.y += Math.random();
+                    meshes.push(newMeshArr[i]);
+                    scene.add(newMeshArr[i].body);
+                }
+                
+            },
+            addMeshArray: (arr) =>{
+                console.log('adding '+ arr.length+ ' meshes');
+
+                arr.forEach(newMesh => {
+                    meshes.push(newMesh);
+                    scene.add(newMesh.body);
+                });
+            },
+            getCamera: () =>{
+                return camera;
+            },
+            getSceneChildren: () =>{
+                return scene.children;
             }
         }
 
