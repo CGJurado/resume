@@ -90693,19 +90693,50 @@ angular.module('myApp')
                 var headerContainer = $document[0].querySelector('div[ui-view="header"]');
                 var height = element[0].offsetHeight;
                 var width = element[0].offsetWidth;
-        
-                element.bind('mousedown', function(event){
-                    event.stopPropagation();
-                    
-                    var clientY = event.clientY - headerContainer.clientHeight;
-                    var mouse2D = new THREE.Vector2( ( event.clientX / width ) * 2 - 1,
-                                                    -( clientY / height ) * 2 + 1);
+                var mouse = {x: 0,y: 0};
+                var INTERSECTED;
+
+                function getIntersections(){                    
+                    var mouse2D = new THREE.Vector2(mouse.x, mouse.y);
                     var raycaster =  new THREE.Raycaster();
                     raycaster.setFromCamera( mouse2D, sceneFactory.getCamera() );
         
-                    var intersects = raycaster.intersectObjects( sceneFactory.getSceneChildren() );
+                    return raycaster.intersectObjects( sceneFactory.getSceneChildren() );
+                }
+
+                element.bind('mousemove', function(event){
+                    mouse.x = (event.clientX / width) * 2 - 1;
+                    mouse.y = -( (event.clientY - headerContainer.clientHeight) / height ) * 2 + 1;
+
+                    var intersects = getIntersections();
+
+                    if ( intersects.length > 0 ) {
+                        if(intersects[0].object != INTERSECTED){
+                            if(INTERSECTED)
+                                INTERSECTED.animations = INTERSECTED.currentAni;
+                            
+                            INTERSECTED = intersects[0].object;
+
+                            INTERSECTED.currentAni = INTERSECTED.animations;
+
+                            INTERSECTED.animations = [];
+                        }
+                    } else{
+                        
+                        if(INTERSECTED)
+                            INTERSECTED.animations = INTERSECTED.currentAni;
+
+                        INTERSECTED = null;
+                    }
+                });
+        
+                element.bind('mousedown', function(event){
+                    event.stopPropagation();
+        
+                    var intersects = getIntersections();
         
                     if ( intersects.length > 0 ) {
+                        console.log(intersects[0].object);
                         intersects[0].object.scale.x++;
                         intersects[0].object.scale.y++;
                         intersects[0].object.scale.z++;
@@ -90734,23 +90765,23 @@ angular.module('myApp')
             rotate: (mesh) =>{//Rotates slowly an object
                 findAni(mesh.animations, 'rotate');
 
-                mesh.body.rotation.x += 0.01;
-                mesh.body.rotation.y += 0.02;
+                mesh.rotation.x += 0.01;
+                mesh.rotation.y += 0.02;
             },
             moveInfRight: (mesh) =>{//Move infinitly to the right
                 findAni(mesh.animations, 'moveInfRight');
 
-                mesh.body.position.x += 0.6;
-                if(mesh.body.position.x > 380){
-                    mesh.body.position.x = -380;
+                mesh.position.x += 0.6;
+                if(mesh.position.x > 380){
+                    mesh.position.x = -380;
                 }
             },
             moveInfUp: (mesh) =>{//Move infinitly up
                 findAni(mesh.animations, 'moveInfRight');
 
-                mesh.body.position.y += 0.4;
-                if(mesh.body.position.y > 150){
-                    mesh.body.position.y = -150;
+                mesh.position.y += 0.4;
+                if(mesh.position.y > 150){
+                    mesh.position.y = -150;
                 }
             }
         }
@@ -90778,11 +90809,9 @@ angular.module('myApp')
                 
                 var geometry = new THREE.BoxGeometry( 20, 20, 20 );
                 var material = new THREE.MeshNormalMaterial();
-                var mesh = {
-                    body: new THREE.Mesh( geometry, material ),
-                    animations: []
-                };
-                mesh.body.position.x = 100;
+                var mesh =  new THREE.Mesh( geometry, material );
+                mesh.animations = [];
+                mesh.position.x = 100;
 
                 return mesh;
 
@@ -90792,11 +90821,9 @@ angular.module('myApp')
 
                 var geometry = new THREE.SphereGeometry( 0.2, 6, 32 );
                 var material = new THREE.MeshNormalMaterial();
-                var mesh = {
-                    body: new THREE.Mesh( geometry, material ),
-                    animations: []
-                };
-                mesh.body.position.x = -100;
+                var mesh =  new THREE.Mesh( geometry, material );
+                mesh.animations = [];
+                mesh.position.x = -100;
 
                 return mesh;
 
@@ -90828,16 +90855,14 @@ angular.module('myApp')
                 var preGeometry = new THREE.ExtrudeGeometry( heartShape, extrudeSettings );
                 var geometry = preGeometry.scale(0.5,0.5,0.5);
                 var material = new THREE.MeshNormalMaterial();
-                var mesh = {
-                    body: new THREE.Mesh( geometry, material ),
-                    animations: []
-                };
+                var mesh =  new THREE.Mesh( geometry, material );
+                mesh.animations = [];
 
-                mesh.body.position.x = Math.floor(Math.random()*680)-340;
-                mesh.body.position.y = Math.floor(Math.random()*100)-100;
-                mesh.body.position.z = Math.floor(Math.random()*400)-200;
-                mesh.body.rotation.x += Math.random();
-                mesh.body.rotation.y += Math.random();                
+                mesh.position.x = Math.floor(Math.random()*680)-340;
+                mesh.position.y = Math.floor(Math.random()*100)-100;
+                mesh.position.z = Math.floor(Math.random()*400)-200;
+                mesh.rotation.x += Math.random();
+                mesh.rotation.y += Math.random();                
 
                 return mesh;
 
@@ -90866,16 +90891,14 @@ angular.module('myApp')
                 var preGeometry = new THREE.ExtrudeGeometry( diamondShape, extrudeSettings );
                 var geometry = preGeometry.scale(0.3,0.3,0.3);
                 var material = new THREE.MeshNormalMaterial();
-                var mesh = {
-                    body: new THREE.Mesh( geometry, material ),
-                    animations: []
-                };
-                // mesh.body.position.x = -100;
-                mesh.body.position.x = Math.floor(Math.random()*680)-340;
-                mesh.body.position.y = Math.floor(Math.random()*100)-100;
-                mesh.body.position.z = Math.floor(Math.random()*400)-200;
-                mesh.body.rotation.x += Math.random();
-                mesh.body.rotation.y += Math.random();
+                var mesh =  new THREE.Mesh( geometry, material );
+                mesh.animations = [];
+                // mesh.position.x = -100;
+                mesh.position.x = Math.floor(Math.random()*680)-340;
+                mesh.position.y = Math.floor(Math.random()*100)-100;
+                mesh.position.z = Math.floor(Math.random()*400)-200;
+                mesh.rotation.x += Math.random();
+                mesh.rotation.y += Math.random();
 
                 return mesh;
             },
@@ -90892,16 +90915,14 @@ angular.module('myApp')
                             console.log('spade++');
                             
                             var material = new THREE.MeshNormalMaterial();
-                            var mesh = {
-                                body: new THREE.Mesh( geometry, material ),
-                                animations: []
-                            };
-                            // mesh.body.position.x = -100;
-                            mesh.body.position.x = Math.floor(Math.random()*680)-340;
-                            mesh.body.position.y = Math.floor(Math.random()*100)-100;
-                            mesh.body.position.z = Math.floor(Math.random()*400)-200;
-                            mesh.body.rotation.x += Math.random();
-                            mesh.body.rotation.y += Math.random();
+                            var mesh =  new THREE.Mesh( geometry, material );
+                            mesh.animations = [];
+                            // mesh.position.x = -100;
+                            mesh.position.x = Math.floor(Math.random()*680)-340;
+                            mesh.position.y = Math.floor(Math.random()*100)-100;
+                            mesh.position.z = Math.floor(Math.random()*400)-200;
+                            mesh.rotation.x += Math.random();
+                            mesh.rotation.y += Math.random();
 
                             resolve(mesh);
                         },
@@ -90934,16 +90955,14 @@ angular.module('myApp')
                             console.log('clover++');
                             
                             var material = new THREE.MeshNormalMaterial();
-                            var mesh = {
-                                body: new THREE.Mesh( geometry, material ),
-                                animations: []
-                            };
-                            // mesh.body.position.x = -100;
-                            mesh.body.position.x = Math.floor(Math.random()*680)-340;
-                            mesh.body.position.y = Math.floor(Math.random()*100)-100;
-                            mesh.body.position.z = Math.floor(Math.random()*400)-200;
-                            mesh.body.rotation.x += Math.random();
-                            mesh.body.rotation.y += Math.random();
+                            var mesh =  new THREE.Mesh( geometry, material );
+                            mesh.animations = [];
+                            // mesh.position.x = -100;
+                            mesh.position.x = Math.floor(Math.random()*680)-340;
+                            mesh.position.y = Math.floor(Math.random()*100)-100;
+                            mesh.position.z = Math.floor(Math.random()*400)-200;
+                            mesh.rotation.x += Math.random();
+                            mesh.rotation.y += Math.random();
 
                             resolve(mesh);
                         },
@@ -90973,11 +90992,9 @@ angular.module('myApp')
                             console.log('monkey++');
 
                             var material = new THREE.MeshNormalMaterial();
-                            var mesh = {
-                                body: new THREE.Mesh( geometry, material ),
-                                animations: []
-                            };
-                            mesh.body.position.x = -100;
+                            var mesh =  new THREE.Mesh( geometry, material );
+                            mesh.animations = [];
+                            mesh.position.x = -100;
                             resolve(mesh);
                         },
                         // called while loading is progressing
@@ -90986,7 +91003,7 @@ angular.module('myApp')
                         },
                         // called when loading has errors
                         function ( error ) {                    
-                            reject( 'An error happened' );                    
+                            reject( 'An error happened' );
                         }
                     );
                 });
@@ -90999,10 +91016,8 @@ angular.module('myApp')
                 geometry.vertices.push(new THREE.Vector3( -10, 0, 0) );
                 geometry.vertices.push(new THREE.Vector3( 0, 10, 0) );
                 geometry.vertices.push(new THREE.Vector3( 10, 0, 0) );
-                var mesh = {
-                    body: new THREE.Line( geometry, material ),
-                    animations: []
-                };
+                var mesh = new THREE.Line( geometry, material );
+                mesh.animations = [];
 
                 return mesh;
             }
@@ -91067,24 +91082,22 @@ angular.module('myApp')
                 console.log('something was "added"');
 
                 meshes.push(newMesh);
-                scene.add( newMesh.body );
+                scene.add( newMesh );
             },
             addN: (n, newMesh) =>{
                 console.log('adding '+ n+ ' meshes');
 
                 var newMeshArr = [];
                 for(var i = 0; i <  n; i++){
-                    newMeshArr.push({
-                        body: newMesh.body.clone(),
-                        animations: ['moveInfRight', 'moveInfUp', 'rotate']
-                    });
-                    newMeshArr[i].body.position.x = Math.floor(Math.random()*680)-340;
-                    newMeshArr[i].body.position.y = Math.floor(Math.random()*100)-100;
-                    newMeshArr[i].body.position.z = Math.floor(Math.random()*400)-200;
-                    newMeshArr[i].body.rotation.x += Math.random();
-                    newMeshArr[i].body.rotation.y += Math.random();
+                    newMeshArr.push(newMesh.clone());
+                    newMeshArr[i].animations = ['moveInfRight', 'moveInfUp', 'rotate'];
+                    newMeshArr[i].position.x = Math.floor(Math.random()*680)-340;
+                    newMeshArr[i].position.y = Math.floor(Math.random()*100)-100;
+                    newMeshArr[i].position.z = Math.floor(Math.random()*400)-200;
+                    newMeshArr[i].rotation.x += Math.random();
+                    newMeshArr[i].rotation.y += Math.random();
                     meshes.push(newMeshArr[i]);
-                    scene.add(newMeshArr[i].body);
+                    scene.add( newMeshArr[i] );
                 }
                 
             },
@@ -91093,7 +91106,7 @@ angular.module('myApp')
 
                 arr.forEach(newMesh => {
                     meshes.push(newMesh);
-                    scene.add(newMesh.body);
+                    scene.add( newMesh );
                 });
             },
             getCamera: () =>{
