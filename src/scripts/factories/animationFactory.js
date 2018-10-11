@@ -17,23 +17,23 @@ angular.module('myApp')
             rotate: (mesh) =>{//Rotates slowly an object
                 findAni(mesh.animations, 'rotate');
 
-                mesh.body.rotation.x += 0.01;
-                mesh.body.rotation.y += 0.02;
+                mesh.rotation.x += 0.01;
+                mesh.rotation.y += 0.02;
             },
             moveInfRight: (mesh) =>{//Move infinitly to the right
                 findAni(mesh.animations, 'moveInfRight');
 
-                mesh.body.position.x += 0.6;
-                if(mesh.body.position.x > 380){
-                    mesh.body.position.x = -380;
+                mesh.position.x += 0.6;
+                if(mesh.position.x > 380){
+                    mesh.position.x = -380;
                 }
             },
             moveInfUp: (mesh) =>{//Move infinitly up
                 findAni(mesh.animations, 'moveInfRight');
 
-                mesh.body.position.y += 0.4;
-                if(mesh.body.position.y > 150){
-                    mesh.body.position.y = -150;
+                mesh.position.y += 0.4;
+                if(mesh.position.y > 150){
+                    mesh.position.y = -150;
                 }
             }
         }

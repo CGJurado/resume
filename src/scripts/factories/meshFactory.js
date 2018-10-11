@@ -10,11 +10,9 @@ angular.module('myApp')
                 
                 var geometry = new THREE.BoxGeometry( 20, 20, 20 );
                 var material = new THREE.MeshNormalMaterial();
-                var mesh = {
-                    body: new THREE.Mesh( geometry, material ),
-                    animations: []
-                };
-                mesh.body.position.x = 100;
+                var mesh =  new THREE.Mesh( geometry, material );
+                mesh.animations = [];
+                mesh.position.x = 100;
 
                 return mesh;
 
@@ -24,11 +22,9 @@ angular.module('myApp')
 
                 var geometry = new THREE.SphereGeometry( 0.2, 6, 32 );
                 var material = new THREE.MeshNormalMaterial();
-                var mesh = {
-                    body: new THREE.Mesh( geometry, material ),
-                    animations: []
-                };
-                mesh.body.position.x = -100;
+                var mesh =  new THREE.Mesh( geometry, material );
+                mesh.animations = [];
+                mesh.position.x = -100;
 
                 return mesh;
 
@@ -60,16 +56,14 @@ angular.module('myApp')
                 var preGeometry = new THREE.ExtrudeGeometry( heartShape, extrudeSettings );
                 var geometry = preGeometry.scale(0.5,0.5,0.5);
                 var material = new THREE.MeshNormalMaterial();
-                var mesh = {
-                    body: new THREE.Mesh( geometry, material ),
-                    animations: []
-                };
+                var mesh =  new THREE.Mesh( geometry, material );
+                mesh.animations = [];
 
-                mesh.body.position.x = Math.floor(Math.random()*680)-340;
-                mesh.body.position.y = Math.floor(Math.random()*100)-100;
-                mesh.body.position.z = Math.floor(Math.random()*400)-200;
-                mesh.body.rotation.x += Math.random();
-                mesh.body.rotation.y += Math.random();                
+                mesh.position.x = Math.floor(Math.random()*680)-340;
+                mesh.position.y = Math.floor(Math.random()*100)-100;
+                mesh.position.z = Math.floor(Math.random()*400)-200;
+                mesh.rotation.x += Math.random();
+                mesh.rotation.y += Math.random();                
 
                 return mesh;
 
@@ -98,16 +92,14 @@ angular.module('myApp')
                 var preGeometry = new THREE.ExtrudeGeometry( diamondShape, extrudeSettings );
                 var geometry = preGeometry.scale(0.3,0.3,0.3);
                 var material = new THREE.MeshNormalMaterial();
-                var mesh = {
-                    body: new THREE.Mesh( geometry, material ),
-                    animations: []
-                };
-                // mesh.body.position.x = -100;
-                mesh.body.position.x = Math.floor(Math.random()*680)-340;
-                mesh.body.position.y = Math.floor(Math.random()*100)-100;
-                mesh.body.position.z = Math.floor(Math.random()*400)-200;
-                mesh.body.rotation.x += Math.random();
-                mesh.body.rotation.y += Math.random();
+                var mesh =  new THREE.Mesh( geometry, material );
+                mesh.animations = [];
+                // mesh.position.x = -100;
+                mesh.position.x = Math.floor(Math.random()*680)-340;
+                mesh.position.y = Math.floor(Math.random()*100)-100;
+                mesh.position.z = Math.floor(Math.random()*400)-200;
+                mesh.rotation.x += Math.random();
+                mesh.rotation.y += Math.random();
 
                 return mesh;
             },
@@ -124,16 +116,14 @@ angular.module('myApp')
                             console.log('spade++');
                             
                             var material = new THREE.MeshNormalMaterial();
-                            var mesh = {
-                                body: new THREE.Mesh( geometry, material ),
-                                animations: []
-                            };
-                            // mesh.body.position.x = -100;
-                            mesh.body.position.x = Math.floor(Math.random()*680)-340;
-                            mesh.body.position.y = Math.floor(Math.random()*100)-100;
-                            mesh.body.position.z = Math.floor(Math.random()*400)-200;
-                            mesh.body.rotation.x += Math.random();
-                            mesh.body.rotation.y += Math.random();
+                            var mesh =  new THREE.Mesh( geometry, material );
+                            mesh.animations = [];
+                            // mesh.position.x = -100;
+                            mesh.position.x = Math.floor(Math.random()*680)-340;
+                            mesh.position.y = Math.floor(Math.random()*100)-100;
+                            mesh.position.z = Math.floor(Math.random()*400)-200;
+                            mesh.rotation.x += Math.random();
+                            mesh.rotation.y += Math.random();
 
                             resolve(mesh);
                         },
@@ -166,16 +156,14 @@ angular.module('myApp')
                             console.log('clover++');
                             
                             var material = new THREE.MeshNormalMaterial();
-                            var mesh = {
-                                body: new THREE.Mesh( geometry, material ),
-                                animations: []
-                            };
-                            // mesh.body.position.x = -100;
-                            mesh.body.position.x = Math.floor(Math.random()*680)-340;
-                            mesh.body.position.y = Math.floor(Math.random()*100)-100;
-                            mesh.body.position.z = Math.floor(Math.random()*400)-200;
-                            mesh.body.rotation.x += Math.random();
-                            mesh.body.rotation.y += Math.random();
+                            var mesh =  new THREE.Mesh( geometry, material );
+                            mesh.animations = [];
+                            // mesh.position.x = -100;
+                            mesh.position.x = Math.floor(Math.random()*680)-340;
+                            mesh.position.y = Math.floor(Math.random()*100)-100;
+                            mesh.position.z = Math.floor(Math.random()*400)-200;
+                            mesh.rotation.x += Math.random();
+                            mesh.rotation.y += Math.random();
 
                             resolve(mesh);
                         },
@@ -205,11 +193,9 @@ angular.module('myApp')
                             console.log('monkey++');
 
                             var material = new THREE.MeshNormalMaterial();
-                            var mesh = {
-                                body: new THREE.Mesh( geometry, material ),
-                                animations: []
-                            };
-                            mesh.body.position.x = -100;
+                            var mesh =  new THREE.Mesh( geometry, material );
+                            mesh.animations = [];
+                            mesh.position.x = -100;
                             resolve(mesh);
                         },
                         // called while loading is progressing
@@ -218,7 +204,7 @@ angular.module('myApp')
                         },
                         // called when loading has errors
                         function ( error ) {                    
-                            reject( 'An error happened' );                    
+                            reject( 'An error happened' );
                         }
                     );
                 });
@@ -231,10 +217,8 @@ angular.module('myApp')
                 geometry.vertices.push(new THREE.Vector3( -10, 0, 0) );
                 geometry.vertices.push(new THREE.Vector3( 0, 10, 0) );
                 geometry.vertices.push(new THREE.Vector3( 10, 0, 0) );
-                var mesh = {
-                    body: new THREE.Line( geometry, material ),
-                    animations: []
-                };
+                var mesh = new THREE.Line( geometry, material );
+                mesh.animations = [];
 
                 return mesh;
             }

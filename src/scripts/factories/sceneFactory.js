@@ -54,24 +54,22 @@ angular.module('myApp')
                 console.log('something was "added"');
 
                 meshes.push(newMesh);
-                scene.add( newMesh.body );
+                scene.add( newMesh );
             },
             addN: (n, newMesh) =>{
                 console.log('adding '+ n+ ' meshes');
 
                 var newMeshArr = [];
                 for(var i = 0; i <  n; i++){
-                    newMeshArr.push({
-                        body: newMesh.body.clone(),
-                        animations: ['moveInfRight', 'moveInfUp', 'rotate']
-                    });
-                    newMeshArr[i].body.position.x = Math.floor(Math.random()*680)-340;
-                    newMeshArr[i].body.position.y = Math.floor(Math.random()*100)-100;
-                    newMeshArr[i].body.position.z = Math.floor(Math.random()*400)-200;
-                    newMeshArr[i].body.rotation.x += Math.random();
-                    newMeshArr[i].body.rotation.y += Math.random();
+                    newMeshArr.push(newMesh.clone());
+                    newMeshArr[i].animations = ['moveInfRight', 'moveInfUp', 'rotate'];
+                    newMeshArr[i].position.x = Math.floor(Math.random()*680)-340;
+                    newMeshArr[i].position.y = Math.floor(Math.random()*100)-100;
+                    newMeshArr[i].position.z = Math.floor(Math.random()*400)-200;
+                    newMeshArr[i].rotation.x += Math.random();
+                    newMeshArr[i].rotation.y += Math.random();
                     meshes.push(newMeshArr[i]);
-                    scene.add(newMeshArr[i].body);
+                    scene.add( newMeshArr[i] );
                 }
                 
             },
@@ -80,7 +78,7 @@ angular.module('myApp')
 
                 arr.forEach(newMesh => {
                     meshes.push(newMesh);
-                    scene.add(newMesh.body);
+                    scene.add( newMesh );
                 });
             },
             getCamera: () =>{
