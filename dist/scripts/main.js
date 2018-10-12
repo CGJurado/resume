@@ -90600,6 +90600,10 @@ angular.module('myApp')
         $scope.goto = function(page) {
             $state.go(page);
         };
+
+        $scope.$on('goTo', function(ev, arg){
+            $scope.goto(arg.str);
+        });
     }
 ]);
 angular.module('myApp')
@@ -90682,7 +90686,8 @@ angular.module('myApp')
 .directive('sceneDirective',[
     'sceneFactory',
     '$document',
-    function(sceneFactory, $document){
+    'helper',
+    function(sceneFactory, $document, helper){
         return {
             restrict: 'AE',
             link: function(scope, element, attrs){
@@ -90696,11 +90701,11 @@ angular.module('myApp')
                 var mouse = {x: 0,y: 0};
                 var INTERSECTED;
 
-                function getIntersections(){                    
+                function getIntersections(){
                     var mouse2D = new THREE.Vector2(mouse.x, mouse.y);
                     var raycaster =  new THREE.Raycaster();
                     raycaster.setFromCamera( mouse2D, sceneFactory.getCamera() );
-        
+                    
                     return raycaster.intersectObjects( sceneFactory.getSceneChildren() );
                 }
 
@@ -90720,6 +90725,10 @@ angular.module('myApp')
                             INTERSECTED.currentAni = INTERSECTED.animations;
 
                             INTERSECTED.animations = [];
+                            if(INTERSECTED.name === 'sussane'){
+                                INTERSECTED.rotation.x = 0;
+                                INTERSECTED.rotation.y = 0;
+                            }                            
                         }
                     } else{
                         
@@ -90736,10 +90745,18 @@ angular.module('myApp')
                     var intersects = getIntersections();
         
                     if ( intersects.length > 0 ) {
-                        console.log(intersects[0].object);
-                        intersects[0].object.scale.x++;
-                        intersects[0].object.scale.y++;
-                        intersects[0].object.scale.z++;
+                        if(intersects[0].object.name === 'sussane'){
+                            helper.broadcast('goTo', 'app.aboutme');
+                        } else if(intersects[0].object.name === 'line'){
+                            helper.broadcast('goTo', 'app');
+                        } else{
+                            sceneFactory.del(intersects[0].object);
+                            console.log(sceneFactory.getSceneChildren().length);
+                        }
+                        
+                        // intersects[0].object.scale.x++;
+                        // intersects[0].object.scale.y++;
+                        // intersects[0].object.scale.z++;
                     }
                 });
             }
@@ -90799,6 +90816,20 @@ angular.module('myApp')
 ]);
 angular.module('myApp')
 
+.factory('helper', [
+    '$rootScope',
+    function($rootScope){
+        var obj = {
+            broadcast: (action, arg) =>{
+                $rootScope.$broadcast(action, {str: arg});
+            }
+        }
+
+        return obj;
+    }
+]);
+angular.module('myApp')
+
 .factory('meshFactory', [
     '$q',
     function($q){
@@ -90811,6 +90842,7 @@ angular.module('myApp')
                 var material = new THREE.MeshNormalMaterial();
                 var mesh =  new THREE.Mesh( geometry, material );
                 mesh.animations = [];
+                mesh.name = 'cube';
                 mesh.position.x = 100;
 
                 return mesh;
@@ -90823,6 +90855,7 @@ angular.module('myApp')
                 var material = new THREE.MeshNormalMaterial();
                 var mesh =  new THREE.Mesh( geometry, material );
                 mesh.animations = [];
+                mesh.name = 'sphere';
                 mesh.position.x = -100;
 
                 return mesh;
@@ -90857,6 +90890,7 @@ angular.module('myApp')
                 var material = new THREE.MeshNormalMaterial();
                 var mesh =  new THREE.Mesh( geometry, material );
                 mesh.animations = [];
+                mesh.name = 'heart';
 
                 mesh.position.x = Math.floor(Math.random()*680)-340;
                 mesh.position.y = Math.floor(Math.random()*100)-100;
@@ -90893,6 +90927,7 @@ angular.module('myApp')
                 var material = new THREE.MeshNormalMaterial();
                 var mesh =  new THREE.Mesh( geometry, material );
                 mesh.animations = [];
+                name.name = 'diamond';
                 // mesh.position.x = -100;
                 mesh.position.x = Math.floor(Math.random()*680)-340;
                 mesh.position.y = Math.floor(Math.random()*100)-100;
@@ -90917,6 +90952,7 @@ angular.module('myApp')
                             var material = new THREE.MeshNormalMaterial();
                             var mesh =  new THREE.Mesh( geometry, material );
                             mesh.animations = [];
+                            mesh.name = 'spades';
                             // mesh.position.x = -100;
                             mesh.position.x = Math.floor(Math.random()*680)-340;
                             mesh.position.y = Math.floor(Math.random()*100)-100;
@@ -90957,6 +90993,7 @@ angular.module('myApp')
                             var material = new THREE.MeshNormalMaterial();
                             var mesh =  new THREE.Mesh( geometry, material );
                             mesh.animations = [];
+                            mesh.name = 'clover';
                             // mesh.position.x = -100;
                             mesh.position.x = Math.floor(Math.random()*680)-340;
                             mesh.position.y = Math.floor(Math.random()*100)-100;
@@ -90994,6 +91031,7 @@ angular.module('myApp')
                             var material = new THREE.MeshNormalMaterial();
                             var mesh =  new THREE.Mesh( geometry, material );
                             mesh.animations = [];
+                            mesh.name = 'sussane';
                             mesh.position.x = -100;
                             resolve(mesh);
                         },
@@ -91018,6 +91056,7 @@ angular.module('myApp')
                 geometry.vertices.push(new THREE.Vector3( 10, 0, 0) );
                 var mesh = new THREE.Line( geometry, material );
                 mesh.animations = [];
+                mesh.name = 'line';
 
                 return mesh;
             }
@@ -91033,7 +91072,6 @@ angular.module('myApp')
     function(animationFactory){
         
         var camera, scene, renderer, controls;
-        var meshes = [];
 
         var obj = {
             init: (container) =>{
@@ -91064,8 +91102,8 @@ angular.module('myApp')
 
                     requestAnimationFrame( animate );
                     
-                    if(typeof meshes !== 'undefined'){
-                        meshes.forEach(element => {
+                    if(typeof scene.children !== 'undefined'){
+                        scene.children.forEach(element => {
                             if(typeof element.animations !== 'undefined'){
                                 animationFactory.runAni(element);
                             }
@@ -91081,8 +91119,12 @@ angular.module('myApp')
             add: (newMesh) =>{
                 console.log('something was "added"');
 
-                meshes.push(newMesh);
                 scene.add( newMesh );
+            },
+            del: (oldMesh) =>{
+                console.log('something was "removed"');
+
+                scene.remove( oldMesh );
             },
             addN: (n, newMesh) =>{
                 console.log('adding '+ n+ ' meshes');
@@ -91096,7 +91138,6 @@ angular.module('myApp')
                     newMeshArr[i].position.z = Math.floor(Math.random()*400)-200;
                     newMeshArr[i].rotation.x += Math.random();
                     newMeshArr[i].rotation.y += Math.random();
-                    meshes.push(newMeshArr[i]);
                     scene.add( newMeshArr[i] );
                 }
                 
@@ -91105,7 +91146,6 @@ angular.module('myApp')
                 console.log('adding '+ arr.length+ ' meshes');
 
                 arr.forEach(newMesh => {
-                    meshes.push(newMesh);
                     scene.add( newMesh );
                 });
             },

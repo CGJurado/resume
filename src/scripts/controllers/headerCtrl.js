@@ -16,5 +16,9 @@ angular.module('myApp')
         $scope.goto = function(page) {
             $state.go(page);
         };
+
+        $scope.$on('goTo', function(ev, arg){
+            $scope.goto(arg.str);
+        });
     }
 ]);

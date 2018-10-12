@@ -12,6 +12,7 @@ angular.module('myApp')
                 var material = new THREE.MeshNormalMaterial();
                 var mesh =  new THREE.Mesh( geometry, material );
                 mesh.animations = [];
+                mesh.name = 'cube';
                 mesh.position.x = 100;
 
                 return mesh;
@@ -24,6 +25,7 @@ angular.module('myApp')
                 var material = new THREE.MeshNormalMaterial();
                 var mesh =  new THREE.Mesh( geometry, material );
                 mesh.animations = [];
+                mesh.name = 'sphere';
                 mesh.position.x = -100;
 
                 return mesh;
@@ -58,6 +60,7 @@ angular.module('myApp')
                 var material = new THREE.MeshNormalMaterial();
                 var mesh =  new THREE.Mesh( geometry, material );
                 mesh.animations = [];
+                mesh.name = 'heart';
 
                 mesh.position.x = Math.floor(Math.random()*680)-340;
                 mesh.position.y = Math.floor(Math.random()*100)-100;
@@ -94,6 +97,7 @@ angular.module('myApp')
                 var material = new THREE.MeshNormalMaterial();
                 var mesh =  new THREE.Mesh( geometry, material );
                 mesh.animations = [];
+                name.name = 'diamond';
                 // mesh.position.x = -100;
                 mesh.position.x = Math.floor(Math.random()*680)-340;
                 mesh.position.y = Math.floor(Math.random()*100)-100;
@@ -118,6 +122,7 @@ angular.module('myApp')
                             var material = new THREE.MeshNormalMaterial();
                             var mesh =  new THREE.Mesh( geometry, material );
                             mesh.animations = [];
+                            mesh.name = 'spades';
                             // mesh.position.x = -100;
                             mesh.position.x = Math.floor(Math.random()*680)-340;
                             mesh.position.y = Math.floor(Math.random()*100)-100;
@@ -158,6 +163,7 @@ angular.module('myApp')
                             var material = new THREE.MeshNormalMaterial();
                             var mesh =  new THREE.Mesh( geometry, material );
                             mesh.animations = [];
+                            mesh.name = 'clover';
                             // mesh.position.x = -100;
                             mesh.position.x = Math.floor(Math.random()*680)-340;
                             mesh.position.y = Math.floor(Math.random()*100)-100;
@@ -195,6 +201,7 @@ angular.module('myApp')
                             var material = new THREE.MeshNormalMaterial();
                             var mesh =  new THREE.Mesh( geometry, material );
                             mesh.animations = [];
+                            mesh.name = 'sussane';
                             mesh.position.x = -100;
                             resolve(mesh);
                         },
@@ -219,6 +226,7 @@ angular.module('myApp')
                 geometry.vertices.push(new THREE.Vector3( 10, 0, 0) );
                 var mesh = new THREE.Line( geometry, material );
                 mesh.animations = [];
+                mesh.name = 'line';
 
                 return mesh;
             }

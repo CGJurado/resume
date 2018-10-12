@@ -5,7 +5,6 @@ angular.module('myApp')
     function(animationFactory){
         
         var camera, scene, renderer, controls;
-        var meshes = [];
 
         var obj = {
             init: (container) =>{
@@ -36,8 +35,8 @@ angular.module('myApp')
 
                     requestAnimationFrame( animate );
                     
-                    if(typeof meshes !== 'undefined'){
-                        meshes.forEach(element => {
+                    if(typeof scene.children !== 'undefined'){
+                        scene.children.forEach(element => {
                             if(typeof element.animations !== 'undefined'){
                                 animationFactory.runAni(element);
                             }
@@ -53,8 +52,12 @@ angular.module('myApp')
             add: (newMesh) =>{
                 console.log('something was "added"');
 
-                meshes.push(newMesh);
                 scene.add( newMesh );
+            },
+            del: (oldMesh) =>{
+                console.log('something was "removed"');
+
+                scene.remove( oldMesh );
             },
             addN: (n, newMesh) =>{
                 console.log('adding '+ n+ ' meshes');
@@ -68,7 +71,6 @@ angular.module('myApp')
                     newMeshArr[i].position.z = Math.floor(Math.random()*400)-200;
                     newMeshArr[i].rotation.x += Math.random();
                     newMeshArr[i].rotation.y += Math.random();
-                    meshes.push(newMeshArr[i]);
                     scene.add( newMeshArr[i] );
                 }
                 
@@ -77,7 +79,6 @@ angular.module('myApp')
                 console.log('adding '+ arr.length+ ' meshes');
 
                 arr.forEach(newMesh => {
-                    meshes.push(newMesh);
                     scene.add( newMesh );
                 });
             },
