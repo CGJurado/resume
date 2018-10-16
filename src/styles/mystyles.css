@@ -5,9 +5,13 @@ body{
 
 .three {
     width:  100%;
-    height: 500px;
+    height: 550px;
     background-color: #ddd;
-  }
+}
+
+.saturate{
+    filter: saturate(3);
+}
 
 .cubeContainer{
     width:120px;

@@ -49,6 +49,12 @@ angular.module('myApp')
 
                 }
             },
+            updateCanvas: (container) =>{
+                var newAspect = container.clientWidth / container.clientHeight;
+                camera.aspect = newAspect;
+                camera.updateProjectionMatrix();
+                renderer.setSize( container.clientWidth, container.clientHeight );
+            },
             add: (newMesh) =>{
                 console.log('something was "added"');
 
@@ -62,16 +68,15 @@ angular.module('myApp')
             addN: (n, newMesh) =>{
                 console.log('adding '+ n+ ' meshes');
 
-                var newMeshArr = [];
                 for(var i = 0; i <  n; i++){
-                    newMeshArr.push(newMesh.clone());
-                    newMeshArr[i].animations = ['moveInfRight', 'moveInfUp', 'rotate'];
-                    newMeshArr[i].position.x = Math.floor(Math.random()*680)-340;
-                    newMeshArr[i].position.y = Math.floor(Math.random()*100)-100;
-                    newMeshArr[i].position.z = Math.floor(Math.random()*400)-200;
-                    newMeshArr[i].rotation.x += Math.random();
-                    newMeshArr[i].rotation.y += Math.random();
-                    scene.add( newMeshArr[i] );
+                    var meshClone = newMesh.clone();
+                    meshClone.animations = ['moveInfRight', 'moveInfUp', 'rotate'];
+                    meshClone.position.x = Math.floor(Math.random()*680)-340;
+                    meshClone.position.y = Math.floor(Math.random()*100)-100;
+                    meshClone.position.z = Math.floor(Math.random()*400)-200;
+                    meshClone.rotation.x += Math.random();
+                    meshClone.rotation.y += Math.random();
+                    scene.add( meshClone );
                 }
                 
             },

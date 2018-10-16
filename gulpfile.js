@@ -42,8 +42,16 @@ gulp.task('json', () =>{
         }));
 });
 
+gulp.task('png', () =>{
+    gulp.src('./src/images/**/*.*')
+        .pipe(gulp.dest('./dist/images'))
+        .pipe(browserSync.reload({
+            stream: true
+        }));
+});
+
 gulp.task('build', () =>{
-    gulp.start(['css', 'js', 'html', 'json']);
+    gulp.start(['css', 'js', 'html', 'json', 'png']);
 });
 
 gulp.task('browser-sync', () =>{
@@ -62,4 +70,5 @@ gulp.task('start', () => {
     gulp.watch(['./src/scripts/**/*.js'], ['js']);
     gulp.watch(['./src/views/**/*.html'], ['html']);
     gulp.watch(['./src/models/**/*.json'], ['json']);
+    gulp.watch(['./src/models/**/*.png'], ['png']);
 });

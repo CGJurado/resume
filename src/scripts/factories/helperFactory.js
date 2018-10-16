@@ -5,7 +5,7 @@ angular.module('myApp')
     function($rootScope){
         var obj = {
             broadcast: (action, arg) =>{
-                $rootScope.$broadcast(action, {str: arg});
+                $rootScope.$broadcast(action, {value: arg});
             }
         }
 

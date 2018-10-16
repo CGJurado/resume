@@ -18,7 +18,7 @@ angular.module('myApp')
         };
 
         $scope.$on('goTo', function(ev, arg){
-            $scope.goto(arg.str);
+            $scope.goto(arg.value);
         });
     }
 ]);

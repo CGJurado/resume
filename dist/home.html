@@ -24,6 +24,20 @@
                     <figure class="m12">Diciembre</figure>
                 </div>
             </section>
+            <div layout="row" class="itemBox">
+                <div ng-repeat="spade in spades track by $index">
+                    <img src="./images/spade.png" index="{{$index}}" length="{{spades.length}}" name="spades" class="saturate" item>
+                </div>
+                <div ng-repeat="heart in hearts track by $index">
+                    <img src="./images/heart.png" index="{{$index}}" length="{{hearts.length}}" name="hearts" class="saturate" item>
+                </div>
+                <div ng-repeat="clover in clovers track by $index">
+                    <img src="./images/clover.png" index="{{$index}}" length="{{clovers.length}}" name="clovers" class="saturate" item>
+                </div>
+                <div ng-repeat="diamond in diamonds track by $index">
+                    <img src="./images/diamond.png" index="{{$index}}" length="{{diamonds.length}}" name="diamonds" class="saturate" item>
+                </div>
+            </div>
         </div>
 
         <div layout="column" layout-align="start center">

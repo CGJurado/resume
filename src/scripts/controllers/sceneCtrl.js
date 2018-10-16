@@ -7,7 +7,8 @@ angular.module('myApp')
     function($scope, sceneFactory, meshFactory, $document){
         
         var cube = meshFactory.cube();
-        var line = meshFactory.line();
+        // var line = meshFactory.line();
+        var arrow;
         var sussane;
         var hearts = [];
         var diamonds = [];
@@ -32,8 +33,13 @@ angular.module('myApp')
                 
             meshFactory.monkey().then(function(mesh){//Creating Sussane
                 mesh.animations.push('rotate');
-                sussane = mesh;
-                sceneFactory.add(sussane);
+                sceneFactory.add(mesh);
+            }, function(reason){
+                console.log('Failed: '+ reason);
+            });
+
+            meshFactory.arrow().then(function(mesh){//Creating arrow
+                sceneFactory.add(mesh);
             }, function(reason){
                 console.log('Failed: '+ reason);
             });
@@ -60,7 +66,7 @@ angular.module('myApp')
             sceneFactory.addMeshArray(diamonds);
 
             sceneFactory.add(cube);
-            sceneFactory.add(line);
+            // sceneFactory.add(line);
 
             cube.animations.push('rotate');
         });

@@ -5,10 +5,11 @@ angular.module('myApp')
     function($q){
 
         var obj = {
-            cube: () =>{                
+            cube: () =>{
                 console.log('cube++');
                 
                 var geometry = new THREE.BoxGeometry( 20, 20, 20 );
+                geometry.scale(1.3,1.3,1.3);
                 var material = new THREE.MeshNormalMaterial();
                 var mesh =  new THREE.Mesh( geometry, material );
                 mesh.animations = [];
@@ -66,7 +67,7 @@ angular.module('myApp')
                 mesh.position.y = Math.floor(Math.random()*100)-100;
                 mesh.position.z = Math.floor(Math.random()*400)-200;
                 mesh.rotation.x += Math.random();
-                mesh.rotation.y += Math.random();                
+                mesh.rotation.y += Math.random();
 
                 return mesh;
 
@@ -97,7 +98,7 @@ angular.module('myApp')
                 var material = new THREE.MeshNormalMaterial();
                 var mesh =  new THREE.Mesh( geometry, material );
                 mesh.animations = [];
-                name.name = 'diamond';
+                mesh.name = 'diamond';
                 // mesh.position.x = -100;
                 mesh.position.x = Math.floor(Math.random()*680)-340;
                 mesh.position.y = Math.floor(Math.random()*100)-100;
@@ -122,7 +123,7 @@ angular.module('myApp')
                             var material = new THREE.MeshNormalMaterial();
                             var mesh =  new THREE.Mesh( geometry, material );
                             mesh.animations = [];
-                            mesh.name = 'spades';
+                            mesh.name = 'spade';
                             // mesh.position.x = -100;
                             mesh.position.x = Math.floor(Math.random()*680)-340;
                             mesh.position.y = Math.floor(Math.random()*100)-100;
@@ -198,6 +199,7 @@ angular.module('myApp')
                         function(geometry, m){
                             console.log('monkey++');
 
+                            geometry.scale(1.8,1.8,1.8);
                             var material = new THREE.MeshNormalMaterial();
                             var mesh =  new THREE.Mesh( geometry, material );
                             mesh.animations = [];
@@ -206,11 +208,11 @@ angular.module('myApp')
                             resolve(mesh);
                         },
                         // called while loading is progressing
-                        function ( xhr ) {                    
-                            console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );                    
+                        function ( xhr ) {
+                            console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded sussane' );                    
                         },
                         // called when loading has errors
-                        function ( error ) {                    
+                        function ( error ) {
                             reject( 'An error happened' );
                         }
                     );
@@ -229,6 +231,32 @@ angular.module('myApp')
                 mesh.name = 'line';
 
                 return mesh;
+            },
+            arrow: () =>{
+
+                return $q((resolve, reject) =>{
+                    var loader = new THREE.JSONLoader();
+                    loader.load('./models/arrow.json',
+                        function(geometry, m){
+                            console.log('arrow++');
+
+                            geometry.scale(1.7,1.7,1.7);
+                            var material = new THREE.MeshNormalMaterial();
+                            var mesh =  new THREE.Mesh( geometry, material );
+                            mesh.animations = [];
+                            mesh.name = 'arrow';
+                            resolve(mesh);
+                        },
+                        // called while loading is progressing
+                        function ( xhr ) {
+                            console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded arrow' );
+                        },
+                        // called when loading has errors
+                        function ( error ) {
+                            reject( 'An error happened' );
+                        }
+                    );
+                });
             }
         }
 
