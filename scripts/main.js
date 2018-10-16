@@ -90602,15 +90602,45 @@ angular.module('myApp')
         };
 
         $scope.$on('goTo', function(ev, arg){
-            $scope.goto(arg.str);
+            $scope.goto(arg.value);
         });
     }
 ]);
 angular.module('myApp')
 .controller('HomeCtrl', [
-    '$scope', 
-    function($scope){
-        $scope.message = 'KLK!';
+    '$scope',
+    'sceneFactory',
+    function($scope, sceneFactory){
+
+        $scope.spades = [];
+        $scope.hearts = [];
+        $scope.clovers = [];
+        $scope.diamonds = [];
+
+        $scope.message = '<content>';
+
+        $scope.$on('spade', function(action, arg){
+            $scope.spades.push(arg.value);
+            $scope.$apply();
+        });
+        $scope.$on('heart', function(action, arg){
+            $scope.hearts.push(arg.value);
+            $scope.$apply();
+        });
+        $scope.$on('clover', function(action, arg){
+            $scope.clovers.push(arg.value);
+            $scope.$apply();
+        });
+        $scope.$on('diamond', function(action, arg){
+            $scope.diamonds.push(arg.value);
+            $scope.$apply();
+        });
+
+        $scope.$on('returnMesh', function(action, arg){
+            sceneFactory.add($scope[arg.value.type][arg.value.index]);
+            $scope[arg.value.type].splice(arg.value.index, 1);
+            $scope.$apply();
+        });
     }
 ]);
 angular.module('myApp')
@@ -90622,7 +90652,8 @@ angular.module('myApp')
     function($scope, sceneFactory, meshFactory, $document){
         
         var cube = meshFactory.cube();
-        var line = meshFactory.line();
+        // var line = meshFactory.line();
+        var arrow;
         var sussane;
         var hearts = [];
         var diamonds = [];
@@ -90647,8 +90678,13 @@ angular.module('myApp')
                 
             meshFactory.monkey().then(function(mesh){//Creating Sussane
                 mesh.animations.push('rotate');
-                sussane = mesh;
-                sceneFactory.add(sussane);
+                sceneFactory.add(mesh);
+            }, function(reason){
+                console.log('Failed: '+ reason);
+            });
+
+            meshFactory.arrow().then(function(mesh){//Creating arrow
+                sceneFactory.add(mesh);
             }, function(reason){
                 console.log('Failed: '+ reason);
             });
@@ -90675,7 +90711,7 @@ angular.module('myApp')
             sceneFactory.addMeshArray(diamonds);
 
             sceneFactory.add(cube);
-            sceneFactory.add(line);
+            // sceneFactory.add(line);
 
             cube.animations.push('rotate');
         });
@@ -90683,83 +90719,172 @@ angular.module('myApp')
     }
 ]);
 angular.module('myApp')
+
+.directive('item', [
+    '$document',
+    'helper',
+    function($document, helper) {
+        return {
+            link: linker
+        };
+
+        function linker(scope, element, attr) {
+            var startX = 0, x = 0;
+            var startY = 0, y = 0;
+            // element.text('(X:'+ x +',Y:'+ y +')');
+    
+            element.css({
+                position: 'relative',
+                // border: '1px solid red',
+                // backgroundColor: 'lightgrey',
+                cursor: 'pointer',
+                height: '50px',
+                width: '50px'
+            });
+    
+            element.on('mousedown', function(event) {
+                // Prevent default dragging of selected content
+                // if((attr.length - 1) == attr.index){
+                    event.preventDefault();
+                    startX = event.pageX - x;
+                    startY = event.pageY - y;
+                    $document.on('mousemove', mousemove);
+                    $document.on('mouseup', mouseup);
+                // }                
+            });
+    
+            function mousemove(event) {
+                // element.text('(X:'+ x +',Y:'+ y +') (pageX:'+ event.pageX +',pageY:'+ event.pageY +')');
+                y = event.pageY - startY;
+                x = event.pageX - startX;
+                element.css({
+                    top: y + 'px',
+                    left:  x + 'px'
+                });
+            }
+    
+            function mouseup(event) {
+                console.log(x +', '+ y);
+                $document.off('mousemove', mousemove);
+                $document.off('mouseup', mouseup);
+                if(event.pageY < 600 && event.pageY > 50){
+                    x = 0;
+                    y = 0;
+                    element.css({
+                        top: y + 'px',
+                        left:  x + 'px'
+                    });
+                    helper.broadcast('returnMesh', {type: attr.name, index: attr.index});
+                } else{
+                    x = 0;
+                    y = 0;
+                    element.css({
+                        top: y + 'px',
+                        left:  x + 'px'
+                    });
+                }
+            }
+        }
+    }
+]);
+angular.module('myApp')
 .directive('sceneDirective',[
     'sceneFactory',
     '$document',
     'helper',
-    function(sceneFactory, $document, helper){
-        return {
-            restrict: 'AE',
-            link: function(scope, element, attrs){
+    '$window',
+    function(sceneFactory, $document, helper, $window){
+        function linker(scope, element, attrs){
                 
-                sceneFactory.init(element[0]);
-                sceneFactory.render();
+            sceneFactory.init(element[0]);
+            sceneFactory.render();
 
-                var headerContainer = $document[0].querySelector('div[ui-view="header"]');
-                var height = element[0].offsetHeight;
-                var width = element[0].offsetWidth;
-                var mouse = {x: 0,y: 0};
-                var INTERSECTED;
+            var headerContainer = $document[0].querySelector('div[ui-view="header"]');
+            var height = element[0].clientHeight;
+            var width = element[0].clientWidth;
+            var mouse = {x: 0,y: 0};
+            var INTERSECTED;
 
-                function getIntersections(){
-                    var mouse2D = new THREE.Vector2(mouse.x, mouse.y);
-                    var raycaster =  new THREE.Raycaster();
-                    raycaster.setFromCamera( mouse2D, sceneFactory.getCamera() );
-                    
-                    return raycaster.intersectObjects( sceneFactory.getSceneChildren() );
+            angular.element($window).bind('resize', function(){
+                if($window.innerWidth < 750){
+                    element[0].clientHeight = $window.innerHeight;
                 }
+                element[0].clientWidth = $window.innerWidth;
+                sceneFactory.updateCanvas(element[0]);
+            });
 
-                element.bind('mousemove', function(event){
-                    mouse.x = (event.clientX / width) * 2 - 1;
-                    mouse.y = -( (event.clientY - headerContainer.clientHeight) / height ) * 2 + 1;
+            function getIntersections(){
+                var mouse2D = new THREE.Vector2(mouse.x, mouse.y);
+                var raycaster =  new THREE.Raycaster();
+                raycaster.setFromCamera( mouse2D, sceneFactory.getCamera() );
+                
+                return raycaster.intersectObjects( sceneFactory.getSceneChildren() );
+            }
 
-                    var intersects = getIntersections();
+            element.bind('mousemove', function(event){
+                mouse.x = (event.clientX / width) * 2 - 1;
+                mouse.y = -( (event.clientY - headerContainer.clientHeight) / height ) * 2 + 1;
 
-                    if ( intersects.length > 0 ) {
-                        if(intersects[0].object != INTERSECTED){
-                            if(INTERSECTED)
-                                INTERSECTED.animations = INTERSECTED.currentAni;
-                            
-                            INTERSECTED = intersects[0].object;
+                var intersects = getIntersections();
 
-                            INTERSECTED.currentAni = INTERSECTED.animations;
-
-                            INTERSECTED.animations = [];
-                            if(INTERSECTED.name === 'sussane'){
-                                INTERSECTED.rotation.x = 0;
-                                INTERSECTED.rotation.y = 0;
-                            }                            
-                        }
-                    } else{
-                        
+                if ( intersects.length > 0 ) {
+                    if(intersects[0].object != INTERSECTED){
                         if(INTERSECTED)
                             INTERSECTED.animations = INTERSECTED.currentAni;
-
-                        INTERSECTED = null;
-                    }
-                });
-        
-                element.bind('mousedown', function(event){
-                    event.stopPropagation();
-        
-                    var intersects = getIntersections();
-        
-                    if ( intersects.length > 0 ) {
-                        if(intersects[0].object.name === 'sussane'){
-                            helper.broadcast('goTo', 'app.aboutme');
-                        } else if(intersects[0].object.name === 'line'){
-                            helper.broadcast('goTo', 'app');
-                        } else{
-                            sceneFactory.del(intersects[0].object);
-                            console.log(sceneFactory.getSceneChildren().length);
-                        }
                         
-                        // intersects[0].object.scale.x++;
-                        // intersects[0].object.scale.y++;
-                        // intersects[0].object.scale.z++;
+                        INTERSECTED = intersects[0].object;
+
+                        INTERSECTED.currentAni = INTERSECTED.animations;
+
+                        INTERSECTED.animations = [];
+
+                        if(INTERSECTED.name === 'sussane'){
+                            INTERSECTED.rotation.x = 0;
+                            INTERSECTED.rotation.y = 0;
+                        }
                     }
-                });
-            }
+                } else{
+                    
+                    if(INTERSECTED)
+                        INTERSECTED.animations = INTERSECTED.currentAni;
+
+                    INTERSECTED = null;
+                }
+            });
+    
+            element.bind('mousedown', function(event){
+                event.stopPropagation();
+    
+                var intersects = getIntersections();
+    
+                if ( intersects.length > 0 ) {
+                    
+                    if(intersects[0].object.name === 'sussane'){
+                        helper.broadcast('goTo', 'app.aboutme');
+                    } else if(intersects[0].object.name === 'arrow'){
+                        helper.broadcast('goTo', 'app');
+                    } else if(intersects[0].object.name === 'spade'){
+                        helper.broadcast('spade', intersects[0].object);
+                        sceneFactory.del(intersects[0].object);
+                    } else if(intersects[0].object.name === 'heart'){
+                        helper.broadcast('heart', intersects[0].object);
+                        sceneFactory.del(intersects[0].object);
+                    } else if(intersects[0].object.name === 'clover'){
+                        helper.broadcast('clover', intersects[0].object);
+                        sceneFactory.del(intersects[0].object);
+                    } else if(intersects[0].object.name === 'diamond'){
+                        helper.broadcast('diamond', intersects[0].object);
+                        sceneFactory.del(intersects[0].object);
+                    } else{}
+
+                }
+            });
+
+        }
+        
+        return {
+            restrict: 'A',
+            link: linker
         }
     }
 ]);
@@ -90821,7 +90946,7 @@ angular.module('myApp')
     function($rootScope){
         var obj = {
             broadcast: (action, arg) =>{
-                $rootScope.$broadcast(action, {str: arg});
+                $rootScope.$broadcast(action, {value: arg});
             }
         }
 
@@ -90835,10 +90960,11 @@ angular.module('myApp')
     function($q){
 
         var obj = {
-            cube: () =>{                
+            cube: () =>{
                 console.log('cube++');
                 
                 var geometry = new THREE.BoxGeometry( 20, 20, 20 );
+                geometry.scale(1.3,1.3,1.3);
                 var material = new THREE.MeshNormalMaterial();
                 var mesh =  new THREE.Mesh( geometry, material );
                 mesh.animations = [];
@@ -90896,7 +91022,7 @@ angular.module('myApp')
                 mesh.position.y = Math.floor(Math.random()*100)-100;
                 mesh.position.z = Math.floor(Math.random()*400)-200;
                 mesh.rotation.x += Math.random();
-                mesh.rotation.y += Math.random();                
+                mesh.rotation.y += Math.random();
 
                 return mesh;
 
@@ -90927,7 +91053,7 @@ angular.module('myApp')
                 var material = new THREE.MeshNormalMaterial();
                 var mesh =  new THREE.Mesh( geometry, material );
                 mesh.animations = [];
-                name.name = 'diamond';
+                mesh.name = 'diamond';
                 // mesh.position.x = -100;
                 mesh.position.x = Math.floor(Math.random()*680)-340;
                 mesh.position.y = Math.floor(Math.random()*100)-100;
@@ -90952,7 +91078,7 @@ angular.module('myApp')
                             var material = new THREE.MeshNormalMaterial();
                             var mesh =  new THREE.Mesh( geometry, material );
                             mesh.animations = [];
-                            mesh.name = 'spades';
+                            mesh.name = 'spade';
                             // mesh.position.x = -100;
                             mesh.position.x = Math.floor(Math.random()*680)-340;
                             mesh.position.y = Math.floor(Math.random()*100)-100;
@@ -91028,6 +91154,7 @@ angular.module('myApp')
                         function(geometry, m){
                             console.log('monkey++');
 
+                            geometry.scale(1.8,1.8,1.8);
                             var material = new THREE.MeshNormalMaterial();
                             var mesh =  new THREE.Mesh( geometry, material );
                             mesh.animations = [];
@@ -91036,11 +91163,11 @@ angular.module('myApp')
                             resolve(mesh);
                         },
                         // called while loading is progressing
-                        function ( xhr ) {                    
-                            console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );                    
+                        function ( xhr ) {
+                            console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded sussane' );                    
                         },
                         // called when loading has errors
-                        function ( error ) {                    
+                        function ( error ) {
                             reject( 'An error happened' );
                         }
                     );
@@ -91059,6 +91186,32 @@ angular.module('myApp')
                 mesh.name = 'line';
 
                 return mesh;
+            },
+            arrow: () =>{
+
+                return $q((resolve, reject) =>{
+                    var loader = new THREE.JSONLoader();
+                    loader.load('./models/arrow.json',
+                        function(geometry, m){
+                            console.log('arrow++');
+
+                            geometry.scale(1.7,1.7,1.7);
+                            var material = new THREE.MeshNormalMaterial();
+                            var mesh =  new THREE.Mesh( geometry, material );
+                            mesh.animations = [];
+                            mesh.name = 'arrow';
+                            resolve(mesh);
+                        },
+                        // called while loading is progressing
+                        function ( xhr ) {
+                            console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded arrow' );
+                        },
+                        // called when loading has errors
+                        function ( error ) {
+                            reject( 'An error happened' );
+                        }
+                    );
+                });
             }
         }
 
@@ -91116,6 +91269,12 @@ angular.module('myApp')
 
                 }
             },
+            updateCanvas: (container) =>{
+                var newAspect = container.clientWidth / container.clientHeight;
+                camera.aspect = newAspect;
+                camera.updateProjectionMatrix();
+                renderer.setSize( container.clientWidth, container.clientHeight );
+            },
             add: (newMesh) =>{
                 console.log('something was "added"');
 
@@ -91129,16 +91288,15 @@ angular.module('myApp')
             addN: (n, newMesh) =>{
                 console.log('adding '+ n+ ' meshes');
 
-                var newMeshArr = [];
                 for(var i = 0; i <  n; i++){
-                    newMeshArr.push(newMesh.clone());
-                    newMeshArr[i].animations = ['moveInfRight', 'moveInfUp', 'rotate'];
-                    newMeshArr[i].position.x = Math.floor(Math.random()*680)-340;
-                    newMeshArr[i].position.y = Math.floor(Math.random()*100)-100;
-                    newMeshArr[i].position.z = Math.floor(Math.random()*400)-200;
-                    newMeshArr[i].rotation.x += Math.random();
-                    newMeshArr[i].rotation.y += Math.random();
-                    scene.add( newMeshArr[i] );
+                    var meshClone = newMesh.clone();
+                    meshClone.animations = ['moveInfRight', 'moveInfUp', 'rotate'];
+                    meshClone.position.x = Math.floor(Math.random()*680)-340;
+                    meshClone.position.y = Math.floor(Math.random()*100)-100;
+                    meshClone.position.z = Math.floor(Math.random()*400)-200;
+                    meshClone.rotation.x += Math.random();
+                    meshClone.rotation.y += Math.random();
+                    scene.add( meshClone );
                 }
                 
             },
