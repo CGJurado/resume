@@ -90587,9 +90587,11 @@ angular.module('myApp')
     '$scope',
     '$state',
     function($scope, $state){
+
         $scope.currentNavItem = 'page1';
         $scope.secondTabDisabled = false;
         $scope.disableInkBar = false;
+        $scope.dontHide = true;
 
         $scope.$watch(function(){
             return $state.$current.name
@@ -90651,12 +90653,16 @@ angular.module('myApp')
     '$document',
     function($scope, sceneFactory, meshFactory, $document){
         
+        var land = meshFactory.land();
         var cube = meshFactory.cube();
-        // var line = meshFactory.line();
+        var particleLight = meshFactory.particleLight();
+        
         var arrow;
         var sussane;
         var hearts = [];
         var diamonds = [];
+        var isFullscreen = false;
+        $scope.fullSText = 'Go fullscreen';
 
         var meshCount = 20;
         //<<< When document is ready add models to the scene
@@ -90684,7 +90690,7 @@ angular.module('myApp')
             });
 
             meshFactory.arrow().then(function(mesh){//Creating arrow
-                sceneFactory.add(mesh);
+                sceneFactory.addToCamera(mesh);
             }, function(reason){
                 console.log('Failed: '+ reason);
             });
@@ -90707,15 +90713,59 @@ angular.module('myApp')
             }
             //<<< END of Create>>>
 
+            sceneFactory.add(land);
+            sceneFactory.add(particleLight);
+
             sceneFactory.addMeshArray(hearts);
             sceneFactory.addMeshArray(diamonds);
 
             sceneFactory.add(cube);
-            // sceneFactory.add(line);
+            sceneFactory.add( new THREE.AmbientLight( 0x222222 ) );
+            var directionalLight = new THREE.DirectionalLight( 0xffffff, 1 );
+            directionalLight.position.set( 1, 1, 1 ).normalize();
+            sceneFactory.add( directionalLight );
 
             cube.animations.push('rotate');
+            particleLight.animations.push('orbit');
         });
         //<<< END of Add
+
+        
+        $scope.toggleFullscreen = function Fullscreen() {
+            
+            var elem = $document[0].querySelector('.three');
+            console.log(isFullscreen);
+
+            if(!isFullscreen){
+                /* Go fullscreen */
+                if (elem.requestFullscreen) {
+                    elem.requestFullscreen();
+                } else if (elem.mozRequestFullScreen) { /* Firefox */
+                    elem.mozRequestFullScreen();
+                } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
+                    elem.webkitRequestFullscreen();
+                } else if (elem.msRequestFullscreen) { /* IE/Edge */
+                    elem.msRequestFullscreen();
+                }
+                $scope.fullSText = 'Close fullscreen';
+            } else{
+                /* Close fullscreen */
+                if ($document[0].exitFullscreen) {
+                    $document[0].exitFullscreen();
+                } else if ($document[0].mozCancelFullScreen) { /* Firefox */
+                    $document[0].mozCancelFullScreen();
+                } else if ($document[0].webkitExitFullscreen) { /* Chrome, Safari and Opera */
+                    $document[0].webkitExitFullscreen();
+                } else if ($document[0].msExitFullscreen) { /* IE/Edge */
+                    $document[0].msExitFullscreen();
+                }
+                $scope.fullSText = 'Go fullscreen';
+            }
+
+            isFullscreen = !isFullscreen;
+            
+        }
+
     }
 ]);
 angular.module('myApp')
@@ -90814,7 +90864,12 @@ angular.module('myApp')
             });
 
             function getIntersections(){
-                var mouse2D = new THREE.Vector2(mouse.x, mouse.y);
+                var mouse2D;
+                if(sceneFactory.getIsMobile()){
+                    mouse2D = new THREE.Vector2(0, 0);
+                } else {
+                    mouse2D = new THREE.Vector2(mouse.x, mouse.y);
+                }
                 var raycaster =  new THREE.Raycaster();
                 raycaster.setFromCamera( mouse2D, sceneFactory.getCamera() );
                 
@@ -90925,6 +90980,15 @@ angular.module('myApp')
                 if(mesh.position.y > 150){
                     mesh.position.y = -150;
                 }
+            },
+            orbit: (mesh) =>{//Orbits an object or point
+                
+                findAni(mesh.animations, 'orbit');
+                var timer = Date.now() * 0.0003;
+
+                mesh.position.x = (Math.sin( timer * 7 ) * 25)-100;
+				mesh.position.y = Math.cos( timer * 5 ) * 50;
+				mesh.position.z = Math.cos( timer * 3 ) * 25;
             }
         }
 
@@ -90959,13 +91023,31 @@ angular.module('myApp')
     '$q',
     function($q){
 
+        var land;
+
         var obj = {
+            land: () =>{
+                console.log('land++');
+
+                var geometry = new THREE.SphereGeometry( 500, 16, 8 );
+                geometry.scale( - 1, 1, 1 );
+
+                var material = new THREE.MeshBasicMaterial( {
+                    map: new THREE.TextureLoader().load( 'images/space.png' )
+                } );
+
+                land = new THREE.Mesh( geometry, material );
+
+                return land;
+            },
             cube: () =>{
                 console.log('cube++');
                 
                 var geometry = new THREE.BoxGeometry( 20, 20, 20 );
                 geometry.scale(1.3,1.3,1.3);
-                var material = new THREE.MeshNormalMaterial();
+                
+                var material = new THREE.MeshStandardMaterial( { color: 0x0000ff, metalness: 0.5, roughness: 0 } );
+                // var material = new THREE.MeshNormalMaterial({color: 0x0000ff});
                 var mesh =  new THREE.Mesh( geometry, material );
                 mesh.animations = [];
                 mesh.name = 'cube';
@@ -91013,7 +91095,7 @@ angular.module('myApp')
                 
                 var preGeometry = new THREE.ExtrudeGeometry( heartShape, extrudeSettings );
                 var geometry = preGeometry.scale(0.5,0.5,0.5);
-                var material = new THREE.MeshNormalMaterial();
+                var material = new THREE.MeshStandardMaterial( { color: 0xff0000, metalness: 0.5, roughness: 0.2 } );
                 var mesh =  new THREE.Mesh( geometry, material );
                 mesh.animations = [];
                 mesh.name = 'heart';
@@ -91075,7 +91157,7 @@ angular.module('myApp')
                         function(geometry, m){
                             console.log('spade++');
                             
-                            var material = new THREE.MeshNormalMaterial();
+                            var material = new THREE.MeshStandardMaterial( { color: 0x222222, metalness: 0.75, roughness: 0.4 } );
                             var mesh =  new THREE.Mesh( geometry, material );
                             mesh.animations = [];
                             mesh.name = 'spade';
@@ -91116,7 +91198,7 @@ angular.module('myApp')
                         function(geometry, m){
                             console.log('clover++');
                             
-                            var material = new THREE.MeshNormalMaterial();
+                            var material = new THREE.MeshStandardMaterial( { color: 0x01bf20, metalness: 0.5, roughness: 0.1 } );
                             var mesh =  new THREE.Mesh( geometry, material );
                             mesh.animations = [];
                             mesh.name = 'clover';
@@ -91155,7 +91237,11 @@ angular.module('myApp')
                             console.log('monkey++');
 
                             geometry.scale(1.8,1.8,1.8);
-                            var material = new THREE.MeshNormalMaterial();
+
+                            var textureSphere = new THREE.TextureLoader().load( "images/space.png" );
+                            textureSphere.mapping = THREE.SphericalReflectionMapping;
+                            
+                            var material = new THREE.MeshStandardMaterial( { color: 0xffee00, envMap: textureSphere, metalness: 0.95, roughness: 0.2 } );
                             var mesh =  new THREE.Mesh( geometry, material );
                             mesh.animations = [];
                             mesh.name = 'sussane';
@@ -91187,6 +91273,18 @@ angular.module('myApp')
 
                 return mesh;
             },
+            particleLight: () =>{
+                console.log('particleLight++');
+
+                var mesh = new THREE.Mesh( new THREE.SphereBufferGeometry( 1, 8, 8 ), new THREE.MeshBasicMaterial( { color: 0xffffff } ) );
+                mesh.animations = [];
+                mesh.name = 'particleLight';
+
+                var pointLight = new THREE.PointLight( 0xffffff, 2, 800 );
+                mesh.add( pointLight );
+
+                return mesh;
+            },
             arrow: () =>{
 
                 return $q((resolve, reject) =>{
@@ -91196,9 +91294,12 @@ angular.module('myApp')
                             console.log('arrow++');
 
                             geometry.scale(1.7,1.7,1.7);
-                            var material = new THREE.MeshNormalMaterial();
+                            // var material = new THREE.MeshNormalMaterial();
+                            var material = new THREE.MeshStandardMaterial( { color: 0x2dadb6, metalness: 0.8, roughness: 1 } );
                             var mesh =  new THREE.Mesh( geometry, material );
                             mesh.animations = [];
+                            mesh.position.y = -18;
+                            mesh.position.z = -83;
                             mesh.name = 'arrow';
                             resolve(mesh);
                         },
@@ -91224,7 +91325,7 @@ angular.module('myApp')
     'animationFactory',
     function(animationFactory){
         
-        var camera, scene, renderer, controls;
+        var camera, scene, renderer, controls, isMobile;
 
         var obj = {
             init: (container) =>{
@@ -91232,17 +91333,37 @@ angular.module('myApp')
                 init();
 
                 function init() {
+
+                    if (navigator.userAgent.match(/Android/i)
+                        || navigator.userAgent.match(/webOS/i)
+                        || navigator.userAgent.match(/iPhone/i)
+                        || navigator.userAgent.match(/iPad/i)
+                        || navigator.userAgent.match(/iPod/i)
+                        || navigator.userAgent.match(/BlackBerry/i)
+                        || navigator.userAgent.match(/Windows Phone/i)
+                    ) {
+                        isMobile = true;
+                    }
+                    else {
+                        isMobile = false;
+                    }
                     
                     var aspect = container.clientWidth / container.clientHeight;
                     camera = new THREE.PerspectiveCamera( 75, aspect, 0.1, 1000 );
-                    camera.position.z = 70;
+                    camera.position.z = 75;
 
                     scene = new THREE.Scene();
+                    scene.add(camera);
 
                     renderer = new THREE.WebGLRenderer( { antialias: true } );
                     renderer.setSize( container.clientWidth, container.clientHeight );
                     container.appendChild( renderer.domElement );
-                    controls = new THREE.OrbitControls( camera, renderer.domElement );
+
+                    if(isMobile){
+                        controls = new THREE.DeviceOrientationControls( camera );
+                    } else{
+                        controls = new THREE.OrbitControls( camera, renderer.domElement );
+                    }
 
                 }
 
@@ -91307,17 +91428,135 @@ angular.module('myApp')
                     scene.add( newMesh );
                 });
             },
+            addToCamera: (newMesh) =>{
+                camera.add(newMesh);
+            },
             getCamera: () =>{
                 return camera;
             },
             getSceneChildren: () =>{
                 return scene.children;
+            },
+            getIsMobile: () =>{
+                return isMobile;
             }
         }
 
         return obj;
     }
 ]);
+/**
+ * @author richt / http://richt.me
+ * @author WestLangley / http://github.com/WestLangley
+ *
+ * W3C Device Orientation control (http://w3c.github.io/deviceorientation/spec-source-orientation.html)
+ */
+
+THREE.DeviceOrientationControls = function( object ) {
+
+	var scope = this;
+
+	this.object = object;
+	this.object.rotation.reorder( "YXZ" );
+
+	this.enabled = true;
+
+	this.deviceOrientation = {};
+	this.screenOrientation = 0;
+
+	this.alpha = 0;
+	this.alphaOffsetAngle = 0;
+
+
+	var onDeviceOrientationChangeEvent = function( event ) {
+
+		scope.deviceOrientation = event;
+
+	};
+
+	var onScreenOrientationChangeEvent = function() {
+
+		scope.screenOrientation = window.orientation || 0;
+
+	};
+
+	// The angles alpha, beta and gamma form a set of intrinsic Tait-Bryan angles of type Z-X'-Y''
+
+	var setObjectQuaternion = function() {
+
+		var zee = new THREE.Vector3( 0, 0, 1 );
+
+		var euler = new THREE.Euler();
+
+		var q0 = new THREE.Quaternion();
+
+		var q1 = new THREE.Quaternion( - Math.sqrt( 0.5 ), 0, 0, Math.sqrt( 0.5 ) ); // - PI/2 around the x-axis
+
+		return function( quaternion, alpha, beta, gamma, orient ) {
+
+			euler.set( beta, alpha, - gamma, 'YXZ' ); // 'ZXY' for the device, but 'YXZ' for us
+
+			quaternion.setFromEuler( euler ); // orient the device
+
+			quaternion.multiply( q1 ); // camera looks out the back of the device, not the top
+
+			quaternion.multiply( q0.setFromAxisAngle( zee, - orient ) ); // adjust for screen orientation
+
+		}
+
+	}();
+
+	this.connect = function() {
+
+		onScreenOrientationChangeEvent(); // run once on load
+
+		window.addEventListener( 'orientationchange', onScreenOrientationChangeEvent, false );
+		window.addEventListener( 'deviceorientation', onDeviceOrientationChangeEvent, false );
+
+		scope.enabled = true;
+
+	};
+
+	this.disconnect = function() {
+
+		window.removeEventListener( 'orientationchange', onScreenOrientationChangeEvent, false );
+		window.removeEventListener( 'deviceorientation', onDeviceOrientationChangeEvent, false );
+
+		scope.enabled = false;
+
+	};
+
+	this.update = function() {
+
+		if ( scope.enabled === false ) return;
+
+		var alpha = scope.deviceOrientation.alpha ? THREE.Math.degToRad( scope.deviceOrientation.alpha ) + this.alphaOffsetAngle : 0; // Z
+		var beta = scope.deviceOrientation.beta ? THREE.Math.degToRad( scope.deviceOrientation.beta ) : 0; // X'
+		var gamma = scope.deviceOrientation.gamma ? THREE.Math.degToRad( scope.deviceOrientation.gamma ) : 0; // Y''
+		var orient = scope.screenOrientation ? THREE.Math.degToRad( scope.screenOrientation ) : 0; // O
+
+		setObjectQuaternion( scope.object.quaternion, alpha, beta, gamma, orient );
+		this.alpha = alpha;
+
+	};
+
+	this.updateAlphaOffsetAngle = function( angle ) {
+
+		this.alphaOffsetAngle = angle;
+		this.update();
+
+	};
+
+	this.dispose = function() {
+
+		this.disconnect();
+
+	};
+
+	this.connect();
+
+};
+
 /* three-orbitcontrols addendum */
 /**
  * @author qiao / https://github.com/qiao

@@ -4,7 +4,7 @@ angular.module('myApp')
     'animationFactory',
     function(animationFactory){
         
-        var camera, scene, renderer, controls;
+        var camera, scene, renderer, controls, isMobile;
 
         var obj = {
             init: (container) =>{
@@ -12,17 +12,37 @@ angular.module('myApp')
                 init();
 
                 function init() {
+
+                    if (navigator.userAgent.match(/Android/i)
+                        || navigator.userAgent.match(/webOS/i)
+                        || navigator.userAgent.match(/iPhone/i)
+                        || navigator.userAgent.match(/iPad/i)
+                        || navigator.userAgent.match(/iPod/i)
+                        || navigator.userAgent.match(/BlackBerry/i)
+                        || navigator.userAgent.match(/Windows Phone/i)
+                    ) {
+                        isMobile = true;
+                    }
+                    else {
+                        isMobile = false;
+                    }
                     
                     var aspect = container.clientWidth / container.clientHeight;
                     camera = new THREE.PerspectiveCamera( 75, aspect, 0.1, 1000 );
-                    camera.position.z = 70;
+                    camera.position.z = 75;
 
                     scene = new THREE.Scene();
+                    scene.add(camera);
 
                     renderer = new THREE.WebGLRenderer( { antialias: true } );
                     renderer.setSize( container.clientWidth, container.clientHeight );
                     container.appendChild( renderer.domElement );
-                    controls = new THREE.OrbitControls( camera, renderer.domElement );
+
+                    if(isMobile){
+                        controls = new THREE.DeviceOrientationControls( camera );
+                    } else{
+                        controls = new THREE.OrbitControls( camera, renderer.domElement );
+                    }
 
                 }
 
@@ -87,11 +107,17 @@ angular.module('myApp')
                     scene.add( newMesh );
                 });
             },
+            addToCamera: (newMesh) =>{
+                camera.add(newMesh);
+            },
             getCamera: () =>{
                 return camera;
             },
             getSceneChildren: () =>{
                 return scene.children;
+            },
+            getIsMobile: () =>{
+                return isMobile;
             }
         }
 

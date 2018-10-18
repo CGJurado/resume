@@ -4,13 +4,31 @@ angular.module('myApp')
     '$q',
     function($q){
 
+        var land;
+
         var obj = {
+            land: () =>{
+                console.log('land++');
+
+                var geometry = new THREE.SphereGeometry( 500, 16, 8 );
+                geometry.scale( - 1, 1, 1 );
+
+                var material = new THREE.MeshBasicMaterial( {
+                    map: new THREE.TextureLoader().load( 'images/space.png' )
+                } );
+
+                land = new THREE.Mesh( geometry, material );
+
+                return land;
+            },
             cube: () =>{
                 console.log('cube++');
                 
                 var geometry = new THREE.BoxGeometry( 20, 20, 20 );
                 geometry.scale(1.3,1.3,1.3);
-                var material = new THREE.MeshNormalMaterial();
+                
+                var material = new THREE.MeshStandardMaterial( { color: 0x0000ff, metalness: 0.5, roughness: 0 } );
+                // var material = new THREE.MeshNormalMaterial({color: 0x0000ff});
                 var mesh =  new THREE.Mesh( geometry, material );
                 mesh.animations = [];
                 mesh.name = 'cube';
@@ -58,7 +76,7 @@ angular.module('myApp')
                 
                 var preGeometry = new THREE.ExtrudeGeometry( heartShape, extrudeSettings );
                 var geometry = preGeometry.scale(0.5,0.5,0.5);
-                var material = new THREE.MeshNormalMaterial();
+                var material = new THREE.MeshStandardMaterial( { color: 0xff0000, metalness: 0.5, roughness: 0.2 } );
                 var mesh =  new THREE.Mesh( geometry, material );
                 mesh.animations = [];
                 mesh.name = 'heart';
@@ -120,7 +138,7 @@ angular.module('myApp')
                         function(geometry, m){
                             console.log('spade++');
                             
-                            var material = new THREE.MeshNormalMaterial();
+                            var material = new THREE.MeshStandardMaterial( { color: 0x222222, metalness: 0.75, roughness: 0.4 } );
                             var mesh =  new THREE.Mesh( geometry, material );
                             mesh.animations = [];
                             mesh.name = 'spade';
@@ -161,7 +179,7 @@ angular.module('myApp')
                         function(geometry, m){
                             console.log('clover++');
                             
-                            var material = new THREE.MeshNormalMaterial();
+                            var material = new THREE.MeshStandardMaterial( { color: 0x01bf20, metalness: 0.5, roughness: 0.1 } );
                             var mesh =  new THREE.Mesh( geometry, material );
                             mesh.animations = [];
                             mesh.name = 'clover';
@@ -200,7 +218,11 @@ angular.module('myApp')
                             console.log('monkey++');
 
                             geometry.scale(1.8,1.8,1.8);
-                            var material = new THREE.MeshNormalMaterial();
+
+                            var textureSphere = new THREE.TextureLoader().load( "images/space.png" );
+                            textureSphere.mapping = THREE.SphericalReflectionMapping;
+                            
+                            var material = new THREE.MeshStandardMaterial( { color: 0xffee00, envMap: textureSphere, metalness: 0.95, roughness: 0.2 } );
                             var mesh =  new THREE.Mesh( geometry, material );
                             mesh.animations = [];
                             mesh.name = 'sussane';
@@ -232,6 +254,18 @@ angular.module('myApp')
 
                 return mesh;
             },
+            particleLight: () =>{
+                console.log('particleLight++');
+
+                var mesh = new THREE.Mesh( new THREE.SphereBufferGeometry( 1, 8, 8 ), new THREE.MeshBasicMaterial( { color: 0xffffff } ) );
+                mesh.animations = [];
+                mesh.name = 'particleLight';
+
+                var pointLight = new THREE.PointLight( 0xffffff, 2, 800 );
+                mesh.add( pointLight );
+
+                return mesh;
+            },
             arrow: () =>{
 
                 return $q((resolve, reject) =>{
@@ -241,9 +275,12 @@ angular.module('myApp')
                             console.log('arrow++');
 
                             geometry.scale(1.7,1.7,1.7);
-                            var material = new THREE.MeshNormalMaterial();
+                            // var material = new THREE.MeshNormalMaterial();
+                            var material = new THREE.MeshStandardMaterial( { color: 0x2dadb6, metalness: 0.8, roughness: 1 } );
                             var mesh =  new THREE.Mesh( geometry, material );
                             mesh.animations = [];
+                            mesh.position.y = -18;
+                            mesh.position.z = -83;
                             mesh.name = 'arrow';
                             resolve(mesh);
                         },

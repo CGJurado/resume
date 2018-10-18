@@ -3,9 +3,11 @@ angular.module('myApp')
     '$scope',
     '$state',
     function($scope, $state){
+
         $scope.currentNavItem = 'page1';
         $scope.secondTabDisabled = false;
         $scope.disableInkBar = false;
+        $scope.dontHide = true;
 
         $scope.$watch(function(){
             return $state.$current.name

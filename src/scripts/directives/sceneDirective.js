@@ -25,7 +25,12 @@ angular.module('myApp')
             });
 
             function getIntersections(){
-                var mouse2D = new THREE.Vector2(mouse.x, mouse.y);
+                var mouse2D;
+                if(sceneFactory.getIsMobile()){
+                    mouse2D = new THREE.Vector2(0, 0);
+                } else {
+                    mouse2D = new THREE.Vector2(mouse.x, mouse.y);
+                }
                 var raycaster =  new THREE.Raycaster();
                 raycaster.setFromCamera( mouse2D, sceneFactory.getCamera() );
                 

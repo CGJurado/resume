@@ -35,6 +35,15 @@ angular.module('myApp')
                 if(mesh.position.y > 150){
                     mesh.position.y = -150;
                 }
+            },
+            orbit: (mesh) =>{//Orbits an object or point
+                
+                findAni(mesh.animations, 'orbit');
+                var timer = Date.now() * 0.0003;
+
+                mesh.position.x = (Math.sin( timer * 7 ) * 25)-100;
+				mesh.position.y = Math.cos( timer * 5 ) * 50;
+				mesh.position.z = Math.cos( timer * 3 ) * 25;
             }
         }
 
