@@ -2,7 +2,8 @@ angular.module('myApp')
 .controller('HomeCtrl', [
     '$scope',
     'sceneFactory',
-    function($scope, sceneFactory){
+    'helper',
+    function($scope, sceneFactory, helper){
 
         $scope.spades = [];
         $scope.hearts = [];
@@ -30,6 +31,7 @@ angular.module('myApp')
 
         $scope.$on('returnMesh', function(action, arg){
             sceneFactory.add($scope[arg.value.type][arg.value.index]);
+            helper.showToast($scope[arg.value.type][arg.value.index].name +' returned to scene!');
             $scope[arg.value.type].splice(arg.value.index, 1);
             $scope.$apply();
         });

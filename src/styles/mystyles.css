@@ -16,11 +16,26 @@ body{
 .three .fullscreenBtn{
     position: absolute;
     top: 10px;
-    right: 10px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+}
+.three .fullscreenBtn md-icon{
+    width: 48px;
+    height: 48px;
 }
 
 .saturate{
     filter: saturate(3);
+}
+
+.itemBox{
+    background-color: #28292b;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin-top: 5px;
+    height: 79px;
+    border:2px solid #5a5856;
 }
 
 .cubeContainer{

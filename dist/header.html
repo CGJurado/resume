@@ -11,4 +11,20 @@
 
         </md-nav-bar>
     </md-content>
+    <md-button id="menuBtn" class="md-accent md-fab md-fab-bottom-right" ng-click="openFabMenu()">
+        <md-tooltip md-visible="false" md-direction="left">Menu</md-tooltip>
+        <md-icon md-svg-src="images/icons/menu.svg"></md-icon>
+    </md-button>
+    <md-button id="addBtn" class="md-raised md-fab md-fab-bottom-right md-mini" style="display:none;">
+        <md-tooltip md-visible="false" md-direction="left">Add custom mesh</md-tooltip>
+        <md-icon md-svg-src="images/icons/add.svg" aria-label="Add"></md-icon>
+    </md-button>
+    <md-button id="infoBtn" class="md-raised md-fab md-fab-bottom-right md-mini" style="display:none;">
+        <md-tooltip md-visible="false" md-direction="left">About this page</md-tooltip>
+        <md-icon md-svg-src="images/icons/info.svg" aria-label="Info"></md-icon>
+    </md-button>
+    <md-button id="gitBtn" class="md-raised md-fab md-fab-bottom-right md-mini" style="display:none;">
+        <md-tooltip md-visible="false" md-direction="left">View code</md-tooltip>
+        <md-icon md-svg-src="images/icons/git_icon.svg" aria-label="GitHub"></md-icon>
+    </md-button>
 </div>

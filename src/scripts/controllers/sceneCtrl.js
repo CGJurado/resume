@@ -20,21 +20,22 @@ angular.module('myApp')
         var meshCount = 20;
         //<<< When document is ready add models to the scene
         $document.ready(function(){
+            $scope.isMobile = sceneFactory.getIsMobile();
 
             //<<< Loading models from json files >>>
-                
+
             meshFactory.spades().then(function(mesh) {//Creating Spades
                 sceneFactory.addN(meshCount, mesh);
             }, function(reason) {
                 console.log('Failed: '+ reason);
             });
-                
+            
             meshFactory.clover().then(function(mesh) {//Creating Clovers
                 sceneFactory.addN(meshCount, mesh);
             }, function(reason) {
                 console.log('Failed: '+ reason);
             });
-                
+            
             meshFactory.monkey().then(function(mesh){//Creating Sussane
                 mesh.animations.push('rotate');
                 sceneFactory.add(mesh);
@@ -50,7 +51,7 @@ angular.module('myApp')
             //<<< END of Load>>>
 
             //<<< Creating models with threejs code >>>
-                
+            
             for(var i = 0; i < meshCount; i++){//Creating Hearts
                 hearts.push(meshFactory.heart());
                 hearts[i].animations.push('moveInfRight');
@@ -68,6 +69,7 @@ angular.module('myApp')
 
             sceneFactory.add(land);
             sceneFactory.add(particleLight);
+            sceneFactory.add(meshFactory.helperCude());
 
             sceneFactory.addMeshArray(hearts);
             sceneFactory.addMeshArray(diamonds);
@@ -87,7 +89,6 @@ angular.module('myApp')
         $scope.toggleFullscreen = function Fullscreen() {
             
             var elem = $document[0].querySelector('.three');
-            console.log(isFullscreen);
 
             if(!isFullscreen){
                 /* Go fullscreen */

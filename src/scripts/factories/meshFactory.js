@@ -266,6 +266,13 @@ angular.module('myApp')
 
                 return mesh;
             },
+            helperCude: ()=>{
+                var helperGeometry = new THREE.BoxBufferGeometry( 500, 500, 500, 4, 4, 4 );
+				var helperMaterial = new THREE.MeshBasicMaterial( { color: 0xa31e4b, wireframe: true } );
+                var mesh = new THREE.Mesh( helperGeometry, helperMaterial );
+                
+				return mesh;
+            },
             arrow: () =>{
 
                 return $q((resolve, reject) =>{

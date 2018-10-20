@@ -2,7 +2,8 @@ angular.module('myApp')
 
 .factory('sceneFactory', [
     'animationFactory',
-    function(animationFactory){
+    'helper',
+    function(animationFactory, helper){
         
         var camera, scene, renderer, controls, isMobile;
 
@@ -76,17 +77,15 @@ angular.module('myApp')
                 renderer.setSize( container.clientWidth, container.clientHeight );
             },
             add: (newMesh) =>{
-                console.log('something was "added"');
 
                 scene.add( newMesh );
             },
             del: (oldMesh) =>{
-                console.log('something was "removed"');
+                helper.showToast(oldMesh.name +' collected!');
 
                 scene.remove( oldMesh );
             },
             addN: (n, newMesh) =>{
-                console.log('adding '+ n+ ' meshes');
 
                 for(var i = 0; i <  n; i++){
                     var meshClone = newMesh.clone();

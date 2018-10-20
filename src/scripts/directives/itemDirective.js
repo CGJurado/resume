@@ -17,26 +17,28 @@ angular.module('myApp')
                 position: 'relative',
                 // border: '1px solid red',
                 // backgroundColor: 'lightgrey',
+                // transition: 'all 0.3s',
                 cursor: 'pointer',
                 height: '50px',
                 width: '50px'
             });
+
+            console.log(element);
+
+            var hammer = new Hammer(element[0]);
+            hammer.add( new Hammer.Pan({ direction: Hammer.DIRECTION_ALL, threshold: 0 }) );
     
-            element.on('mousedown', function(event) {
-                // Prevent default dragging of selected content
-                // if((attr.length - 1) == attr.index){
-                    event.preventDefault();
-                    startX = event.pageX - x;
-                    startY = event.pageY - y;
-                    $document.on('mousemove', mousemove);
-                    $document.on('mouseup', mouseup);
-                // }                
+            hammer.on('panstart', function(event) {
+                
+                startX = event.center.x - x;
+                startY = event.center.y - y;
             });
+            hammer.on('pan', mousemove);
+            hammer.on('panend', mouseup);
     
             function mousemove(event) {
-                // element.text('(X:'+ x +',Y:'+ y +') (pageX:'+ event.pageX +',pageY:'+ event.pageY +')');
-                y = event.pageY - startY;
-                x = event.pageX - startX;
+                y = event.center.y - startY;
+                x = event.center.x - startX;
                 element.css({
                     top: y + 'px',
                     left:  x + 'px'
@@ -44,10 +46,9 @@ angular.module('myApp')
             }
     
             function mouseup(event) {
-                console.log(x +', '+ y);
-                $document.off('mousemove', mousemove);
-                $document.off('mouseup', mouseup);
-                if(event.pageY < 600 && event.pageY > 50){
+                hammer.off('panmove', mousemove);
+                hammer.off('pressup', mouseup);
+                if(event.center.y < 600 && event.center.y > 50){
                     x = 0;
                     y = 0;
                     element.css({
@@ -58,12 +59,13 @@ angular.module('myApp')
                 } else{
                     x = 0;
                     y = 0;
-                    element.css({
+                    element.animate({
                         top: y + 'px',
                         left:  x + 'px'
-                    });
+                    }, 300);
                 }
             }
+
         }
     }
 ]);

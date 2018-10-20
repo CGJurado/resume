@@ -23,7 +23,7 @@ angular.module('myApp')
             moveInfRight: (mesh) =>{//Move infinitly to the right
                 findAni(mesh.animations, 'moveInfRight');
 
-                mesh.position.x += 0.6;
+                mesh.position.x += 0.3;
                 if(mesh.position.x > 380){
                     mesh.position.x = -380;
                 }
@@ -31,7 +31,7 @@ angular.module('myApp')
             moveInfUp: (mesh) =>{//Move infinitly up
                 findAni(mesh.animations, 'moveInfRight');
 
-                mesh.position.y += 0.4;
+                mesh.position.y += 0.2;
                 if(mesh.position.y > 150){
                     mesh.position.y = -150;
                 }
