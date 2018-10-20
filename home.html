@@ -1,13 +1,9 @@
 
 <!-- <md-content class="md-padding" layout="column"> -->
 
-    <div layout="row" layout-align="space-around">
+    <!-- <div layout="row" layout-align="space-around"> -->
 
-        <div layout="column" layout-align="start center">
-            <h1>{{message}}</h1>
-        </div>
-
-        <div layout="column" layout-align="start center">
+        <div layout="row" layout-align="start center">
             <section class="cubeContainer">
                 <div id="cube" class="show-front panels-backface-invisible" ng-style="calendarCSS" ng-class="{'panels-backface-invisible': visibilityToggle}" style="transform: rotateY(90deg);">
                     <figure class="m1">Enero</figure>
@@ -24,26 +20,22 @@
                     <figure class="m12">Diciembre</figure>
                 </div>
             </section>
-            <div layout="row" class="itemBox">
-                <div ng-repeat="spade in spades track by $index">
-                    <img src="./images/spade.png" index="{{$index}}" length="{{spades.length}}" name="spades" class="saturate" item>
-                </div>
-                <div ng-repeat="heart in hearts track by $index">
-                    <img src="./images/heart.png" index="{{$index}}" length="{{hearts.length}}" name="hearts" class="saturate" item>
-                </div>
-                <div ng-repeat="clover in clovers track by $index">
-                    <img src="./images/clover.png" index="{{$index}}" length="{{clovers.length}}" name="clovers" class="saturate" item>
-                </div>
-                <div ng-repeat="diamond in diamonds track by $index">
-                    <img src="./images/diamond.png" index="{{$index}}" length="{{diamonds.length}}" name="diamonds" class="saturate" item>
-                </div>
+        </div>
+        <div layout="row" layout-align="center" class="itemBox">
+            <div ng-repeat="spade in spades track by $index">
+                <img src="./images/spade.png" index="{{$index}}" length="{{spades.length}}" name="spades" class="saturate" item>
+            </div>
+            <div ng-repeat="heart in hearts track by $index">
+                <img src="./images/heart.png" index="{{$index}}" length="{{hearts.length}}" name="hearts" class="saturate" item>
+            </div>
+            <div ng-repeat="clover in clovers track by $index">
+                <img src="./images/clover.png" index="{{$index}}" length="{{clovers.length}}" name="clovers" class="saturate" item>
+            </div>
+            <div ng-repeat="diamond in diamonds track by $index">
+                <img src="./images/diamond.png" index="{{$index}}" length="{{diamonds.length}}" name="diamonds" class="saturate" item>
             </div>
         </div>
 
-        <div layout="column" layout-align="start center">
-            <h1>{{message}}</h1>
-        </div>
-
-    </div>
+    <!-- </div> -->
 
 <!-- </md-content> -->
