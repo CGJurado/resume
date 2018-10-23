@@ -4,37 +4,89 @@
     <!-- <div layout="row" layout-align="space-around"> -->
 
         <div layout="row" layout-align="start center">
+            <md-button class="md-warn md-raised md-hue-2" ng-click="rotateCube('left')">Left</md-button>
             <section class="cubeContainer">
-                <div id="cube" class="show-front panels-backface-invisible" ng-style="calendarCSS" ng-class="{'panels-backface-invisible': visibilityToggle}" style="transform: rotateY(90deg);">
-                    <figure class="m1">Enero</figure>
-                    <figure class="m2">Febrero</figure>
-                    <figure class="m3">Marzo</figure>
-                    <figure class="m4">Abril</figure>
-                    <figure class="m5">Mayo</figure>
-                    <figure class="m6">Junio</figure>
-                    <figure class="m7">Julio</figure>
-                    <figure class="m8">Agosto</figure>
-                    <figure class="m9">Septiembre</figure>
-                    <figure class="m10">Octubre</figure>
-                    <figure class="m11">Noviembre</figure>
-                    <figure class="m12">Diciembre</figure>
+                <div id="cube" class="show-front panels-backface-invisible" ng-style="calendarCSS" ng-class="{'panels-backface-invisible': visibilityToggle}">
+                    <figure ng-repeat="side in sides track by $index" ng-class="side.class">{{side.name}}</figure>
                 </div>
             </section>
+            <md-button class="md-warn md-raised md-hue-2" ng-click="rotateCube('right')">Right</md-button>
         </div>
         <div layout="row" layout-align="center" class="itemBox">
-            <div ng-repeat="spade in spades track by $index">
-                <img src="./images/spade.png" index="{{$index}}" length="{{spades.length}}" name="spades" class="saturate" item>
+
+            <div layout="row" ng-show="selectedItem == 'Spades'">                
+                <span ng-if="spades.length == 0">No spades collected</span>
+                <div ng-repeat="spade in spades track by $index">
+                    <md-icon md-svg-src="./images/icons/spade.svg" index="{{$index}}" length="{{spades.length}}" name="spades" ng-attr-style="color:{{spade.material.color.getStyle()}};" class="saturate" item></md-icon>
+                </div>
             </div>
-            <div ng-repeat="heart in hearts track by $index">
-                <img src="./images/heart.png" index="{{$index}}" length="{{hearts.length}}" name="hearts" class="saturate" item>
+            <div layout="row" ng-show="selectedItem == 'Hearts'">
+                <span ng-if="hearts.length == 0">No hearts collected</span>
+                <div ng-repeat="heart in hearts track by $index">
+                    <md-icon md-svg-src="./images/icons/heart.svg" index="{{$index}}" length="{{hearts.length}}" name="hearts" ng-attr-style="color:{{heart.material.color.getStyle()}};" class="saturate" item></md-icon>
+                </div>
             </div>
-            <div ng-repeat="clover in clovers track by $index">
-                <img src="./images/clover.png" index="{{$index}}" length="{{clovers.length}}" name="clovers" class="saturate" item>
+            <div layout="row" ng-show="selectedItem == 'Clovers'">
+                <span ng-if="clovers.length == 0">No clovers collected</span>
+                <div ng-repeat="clover in clovers track by $index">
+                    <md-icon md-svg-src="./images/icons/clover.svg" index="{{$index}}" length="{{clovers.length}}" name="clovers" ng-attr-style="color:{{clover.material.color.getStyle()}};" class="saturate" item></md-icon>
+                </div>
             </div>
-            <div ng-repeat="diamond in diamonds track by $index">
-                <img src="./images/diamond.png" index="{{$index}}" length="{{diamonds.length}}" name="diamonds" class="saturate" item>
+            <div layout="row" ng-show="selectedItem == 'Diamonds'">
+                <span ng-if="diamonds.length == 0">No diamonds collected</span>
+                <div ng-repeat="diamond in diamonds track by $index">
+                    <md-icon md-svg-src="./images/icons/diamond.svg" index="{{$index}}" length="{{diamonds.length}}" name="diamonds" ng-attr-style="color:{{diamond.material.color.getStyle()}};" class="saturate" item></md-icon>
+                </div>
             </div>
         </div>
+<!-- <md-content class="md-padding" layout="column"> -->
+        <div layout="row">
+            <div flex layout="column" layout-align="center center">
+                <h5>klk dsddddddddddddddddddddddddddddddddddd</h5>
+            </div>
+            <div flex layout="column" layout-align="center center">
+
+                <div class="customBox"></div>
+                <md-button class="md-raised md-hue-2" ng-click="saveCustomMesh()">Finish/Save</md-button>
+
+            </div>
+            <div flex layout="row">
+                <!-- Size slider -->
+                <md-slider-container ng-disabled="!beenCustomized">
+                    <md-input-container>
+                        <input type="number" ng-model="sliderSize" aria-label="size" aria-controls="size-slider">
+                    </md-input-container>
+                    <md-slider md-discrete ng-model="sliderSize" min="0" max="200" ng-readonly="!beenCustomized" aria-label="size" step="10" id="size-slider" class="md-accent" md-vertical></md-slider>
+                    <h5>Size</h5>
+                </md-slider-container>
+                <!-- Red color slider -->
+                <md-slider-container ng-disabled="!beenCustomized">
+                    <md-input-container>
+                        <input type="number" ng-model="sliderColor.red" aria-label="red" aria-controls="red-slider">
+                    </md-input-container>
+                    <md-slider md-discrete ng-model="sliderColor.red" min="0" max="255" ng-readonly="!beenCustomized" aria-label="red" step="10" id="red-slider" class="md-accent" md-vertical></md-slider>
+                    <h5 ng-attr-style="color: rgb({{sliderColor.red}},0,0)">Red</h5>
+                </md-slider-container>
+                <!-- Green color slider -->
+                <md-slider-container ng-disabled="!beenCustomized">
+                    <md-input-container>
+                        <input type="number" ng-model="sliderColor.green" aria-label="green" aria-controls="green-slider">
+                    </md-input-container>
+                    <md-slider md-discrete ng-model="sliderColor.green" min="0" max="255" ng-readonly="!beenCustomized" aria-label="green" step="10" id="green-slider" class="md-accent" md-vertical></md-slider>
+                    <h5 ng-attr-style="color: rgb(0, {{sliderColor.green}}, 0)">Green</h5>
+                </md-slider-container>
+                <!-- Blue color slider -->
+                <md-slider-container ng-disabled="!beenCustomized">
+                    <md-input-container>
+                        <input type="number" ng-model="sliderColor.blue" aria-label="blue" aria-controls="blue-slider">
+                    </md-input-container>
+                    <md-slider md-discrete ng-model="sliderColor.blue" min="0" max="255" ng-readonly="!beenCustomized" aria-label="blue" step="10" id="blue-slider" class="md-accent" md-vertical></md-slider>
+                    <h5 ng-attr-style="color: rgb(0,0, {{sliderColor.blue}})">Blue</h5>
+                </md-slider-container>
+                
+            </div>
+        </div>
+<!-- </md-content> -->
 
     <!-- </div> -->
 
