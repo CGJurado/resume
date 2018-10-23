@@ -113,7 +113,7 @@ angular.module('myApp')
                 
                 var preGeometry = new THREE.ExtrudeGeometry( diamondShape, extrudeSettings );
                 var geometry = preGeometry.scale(0.3,0.3,0.3);
-                var material = new THREE.MeshNormalMaterial();
+                material = new THREE.MeshStandardMaterial( { color: 0xff00f2, metalness: 0.5, roughness: 0.2 } );
                 var mesh =  new THREE.Mesh( geometry, material );
                 mesh.animations = [];
                 mesh.name = 'diamond';
@@ -301,6 +301,17 @@ angular.module('myApp')
                         }
                     );
                 });
+            },
+            getCustomMaterial: (str)=>{
+                var material;
+
+                if(str === 'spade'){
+                    material = new THREE.MeshStandardMaterial( { color: 0x222222, metalness: 0.75, roughness: 0.4 } );
+                } else {
+                    material = new THREE.MeshStandardMaterial( { color: 0x01bf20, metalness: 0.5, roughness: 0.1 } );
+                }
+
+                return material;
             }
         }
 

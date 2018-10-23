@@ -1,11 +1,14 @@
 body{
-    background-color: #222222;
+    /* background-color: #222222; */
     color: #e2e2e2;
 }
 
+
+body.md-toast-animating{ overflow: visible!important }
+
 .three {
     width:  100%;
-    height: 550px;
+    height: 50%;
     margin: 0 auto;
     position: relative;
 }
@@ -36,6 +39,25 @@ body{
     margin-top: 5px;
     height: 79px;
     border:2px solid #5a5856;
+}
+
+.itemBox md-icon{
+    position: relative;
+    cursor: move;
+    height: 50px;
+    width: 50px;
+    z-index: 60;
+}
+
+.customBox{
+    background-color: #28292b;
+    height: 200px;
+    width: 200px;
+}
+
+.customBox canvas{
+    border:2px solid #5a5856;
+    border-style: dashed;
 }
 
 .cubeContainer{
@@ -87,86 +109,29 @@ body{
 }
 
 #cube .m1{
-    -webkit-transform:rotateY(0) translateZ(224px);
-    -moz-transform:rotateY(0) translateZ(224px);
-    -o-transform:rotateY(0) translateZ(224px);
-    transform:rotateY(0) translateZ(224px)
+    -webkit-transform:rotateY(0) translateZ(60px);
+    -moz-transform:rotateY(0) translateZ(60px);
+    -o-transform:rotateY(0) translateZ(60px);
+    transform:rotateY(0) translateZ(60px)
 }
 
 #cube .m2{
-    -webkit-transform:rotateY(30deg) translateZ(224px);
-    -moz-transform:rotateY(30deg) translateZ(224px);
-    -o-transform:rotateY(30deg) translateZ(224px);
-    transform:rotateY(30deg) translateZ(224px)
+    -webkit-transform:rotateY(90deg) translateZ(60px);
+    -moz-transform:rotateY(90deg) translateZ(60px);
+    -o-transform:rotateY(90deg) translateZ(60px);
+    transform:rotateY(90deg) translateZ(60px)
 }
 
 #cube .m3{
-    -webkit-transform:rotateY(60deg) translateZ(224px);
-    -moz-transform:rotateY(60deg) translateZ(224px);
-    -o-transform:rotateY(60deg) translateZ(224px);
-    transform:rotateY(60deg) translateZ(224px)
+    -webkit-transform:rotateY(180deg) translateZ(60px);
+    -moz-transform:rotateY(180deg) translateZ(60px);
+    -o-transform:rotateY(180deg) translateZ(60px);
+    transform:rotateY(180deg) translateZ(60px)
 }
 
 #cube .m4{
-    -webkit-transform:rotateY(90deg) translateZ(224px);
-    -moz-transform:rotateY(90deg) translateZ(224px);
-    -o-transform:rotateY(90deg) translateZ(224px);
-    transform:rotateY(90deg) translateZ(224px)
+    -webkit-transform:rotateY(270deg) translateZ(60px);
+    -moz-transform:rotateY(270deg) translateZ(60px);
+    -o-transform:rotateY(270deg) translateZ(60px);
+    transform:rotateY(270deg) translateZ(60px)
 }
-
-#cube .m5{
-    -webkit-transform:rotateY(120deg) translateZ(224px);
-    -moz-transform:rotateY(120deg) translateZ(224px);
-    -o-transform:rotateY(120deg) translateZ(224px);
-    transform:rotateY(120deg) translateZ(224px)
-}
-
-#cube .m6{
-    -webkit-transform:rotateY(150deg) translateZ(224px);
-    -moz-transform:rotateY(150deg) translateZ(224px);
-    -o-transform:rotateY(150deg) translateZ(224px);
-    transform:rotateY(150deg) translateZ(224px)
-}
-
-#cube .m7{
-    -webkit-transform:rotateY(180deg) translateZ(224px);
-    -moz-transform:rotateY(180deg) translateZ(224px);
-    -o-transform:rotateY(180deg) translateZ(224px);
-    transform:rotateY(180deg) translateZ(224px)
-}
-
-#cube .m8{
-    -webkit-transform:rotateY(210deg) translateZ(224px);
-    -moz-transform:rotateY(210deg) translateZ(224px);
-    -o-transform:rotateY(210deg) translateZ(224px);
-    transform:rotateY(210deg) translateZ(224px)
-}
-
-#cube .m9{
-    -webkit-transform:rotateY(240deg) translateZ(224px);
-    -moz-transform:rotateY(240deg) translateZ(224px);
-    -o-transform:rotateY(240deg) translateZ(224px);
-    transform:rotateY(240deg) translateZ(224px)
-}
-
-#cube .m10{
-    -webkit-transform:rotateY(270deg) translateZ(224px);
-    -moz-transform:rotateY(270deg) translateZ(224px);
-    -o-transform:rotateY(270deg) translateZ(224px);
-    transform:rotateY(270deg) translateZ(224px)
-}
-
-#cube .m11{
-    -webkit-transform:rotateY(300deg) translateZ(224px);
-    -moz-transform:rotateY(300deg) translateZ(224px);
-    -o-transform:rotateY(300deg) translateZ(224px);
-    transform:rotateY(300deg) translateZ(224px)
-}
-
-#cube .m12{
-    -webkit-transform:rotateY(330deg) translateZ(224px);
-    -moz-transform:rotateY(330deg) translateZ(224px);
-    -o-transform:rotateY(330deg) translateZ(224px);
-    transform:rotateY(330deg) translateZ(224px)
-}
-

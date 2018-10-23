@@ -7,6 +7,10 @@ angular.module('myApp')
     function(sceneFactory, $document, helper, $window){
         function linker(scope, element, attrs){
                 
+            element.css({
+                height: $window.innerHeight/2
+            })
+            console.log('winHeight: '+ $window.innerHeight);
             sceneFactory.init(element[0]);
             sceneFactory.render();
 
@@ -17,10 +21,15 @@ angular.module('myApp')
             var INTERSECTED;
 
             angular.element($window).bind('resize', function(){
-                if($window.innerWidth < 750){
-                    element[0].clientHeight = $window.innerHeight;
-                }
-                element[0].clientWidth = $window.innerWidth;
+                // if($window.innerWidth < 750){
+                //     element[0].clientHeight = $window.innerHeight;
+                // }
+                element.css({
+                    height: $window.innerHeight/2,
+                    width: $window.innerWidth
+                })
+                width = element[0].clientWidth;
+                height = element[0].clientHeight;
                 sceneFactory.updateCanvas(element[0]);
             });
 
@@ -69,6 +78,7 @@ angular.module('myApp')
             });
     
             element.bind('mousedown', function(event){
+                
                 event.stopPropagation();
     
                 var intersects = getIntersections();
@@ -79,6 +89,8 @@ angular.module('myApp')
                         helper.broadcast('goTo', 'app.aboutme');
                     } else if(intersects[0].object.name === 'arrow'){
                         helper.broadcast('goTo', 'app');
+                    } else if(intersects[0].object.name === 'cube'){
+                        sceneFactory.stopTime();
                     } else if(intersects[0].object.name === 'spade'){
                         helper.broadcast('spade', intersects[0].object);
                         sceneFactory.del(intersects[0].object);

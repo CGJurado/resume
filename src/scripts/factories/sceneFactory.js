@@ -5,7 +5,7 @@ angular.module('myApp')
     'helper',
     function(animationFactory, helper){
         
-        var camera, scene, renderer, controls, isMobile;
+        var camera, scene, renderer, controls, isMobile, timeIsStoped = false;
 
         var obj = {
             init: (container) =>{
@@ -56,7 +56,7 @@ angular.module('myApp')
 
                     requestAnimationFrame( animate );
                     
-                    if(typeof scene.children !== 'undefined'){
+                    if(typeof scene.children !== 'undefined' && timeIsStoped === false){
                         scene.children.forEach(element => {
                             if(typeof element.animations !== 'undefined'){
                                 animationFactory.runAni(element);
@@ -117,6 +117,9 @@ angular.module('myApp')
             },
             getIsMobile: () =>{
                 return isMobile;
+            },
+            stopTime: () =>{
+                timeIsStoped = !timeIsStoped;
             }
         }
 
