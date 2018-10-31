@@ -2,9 +2,45 @@ angular.module('myApp')
 
 .factory('meshFactory', [
     '$q',
-    function($q){
+    'helper',
+    function($q, helper){
 
         var land;
+        var texLoader = new THREE.TextureLoader();
+        var texturesArray = helper.getTextures();
+        var loadedTextures = [];
+
+        texturesArray.forEach(element => {
+            loadedTextures.push(texLoader.load(element.img));
+        });
+
+        var customMaterials = {
+            'spade': { map: loadedTextures[0], color: 0x222222, metalness: 0.75, roughness: 0.4 },
+            'heart': { map: loadedTextures[0], color: 0xff0000, metalness: 0.5, roughness: 0.2 } ,
+            'clover': { map: loadedTextures[0], color: 0x01bf20, metalness: 0.5, roughness: 0.1 } ,
+            'diamond': { map: loadedTextures[0], color: 0xff00f2, metalness: 0.5, roughness: 0.2 }
+        };
+        
+        function assignUVs(geometry) {
+            geometry.faceVertexUvs[0] = [];
+            geometry.faces.forEach(function(face) {
+                var components = ['x', 'y', 'z'].sort(function(a, b) {
+                    return Math.abs(face.normal[a]) > Math.abs(face.normal[b]);
+                });
+        
+                var v1 = geometry.vertices[face.a];
+                var v2 = geometry.vertices[face.b];
+                var v3 = geometry.vertices[face.c];
+        
+                geometry.faceVertexUvs[0].push([
+                    new THREE.Vector2(v1[components[0]], v1[components[1]]),
+                    new THREE.Vector2(v2[components[0]], v2[components[1]]),
+                    new THREE.Vector2(v3[components[0]], v3[components[1]])
+                ]);
+        
+            });
+            geometry.uvsNeedUpdate = true;
+        }
 
         var obj = {
             land: () =>{
@@ -30,6 +66,7 @@ angular.module('myApp')
                 var material = new THREE.MeshStandardMaterial( { color: 0x0000ff, metalness: 0.5, roughness: 0 } );
                 // var material = new THREE.MeshNormalMaterial({color: 0x0000ff});
                 var mesh =  new THREE.Mesh( geometry, material );
+                // mesh.material.map = new THREE.TextureLoader().load( 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/259155/THREE_crate1.jpg' );
                 mesh.animations = [];
                 mesh.name = 'cube';
                 mesh.position.x = 100;
@@ -74,8 +111,10 @@ angular.module('myApp')
                     bevelThickness: 1
                 };
                 
-                var preGeometry = new THREE.ExtrudeGeometry( heartShape, extrudeSettings );
-                var geometry = preGeometry.scale(0.5,0.5,0.5);
+                var geometry = new THREE.ExtrudeGeometry( heartShape, extrudeSettings );
+                geometry.scale(0.5,0.5,0.5);
+                // geometry.faces.push(new THREE.Face3(0,1,2));
+                // assignUVs(geometry);
                 var material = new THREE.MeshStandardMaterial( { color: 0xff0000, metalness: 0.5, roughness: 0.2 } );
                 var mesh =  new THREE.Mesh( geometry, material );
                 mesh.animations = [];
@@ -126,63 +165,22 @@ angular.module('myApp')
 
                 return mesh;
             },
-            spades: () =>{
+            getExternalMesh: (str) =>{
                 return $q((resolve, reject) =>{
 
                     var loader = new THREE.JSONLoader();
                     // Load a glTF resource
                     loader.load(
                         // resource URL
-                        './models/spades.json',
+                        './models/'+ str +'.json',
                         // called when the resource is loaded
                         function(geometry, m){
-                            console.log('spade++');
+                            console.log(str+'++');
                             
-                            var material = new THREE.MeshStandardMaterial( { color: 0x222222, metalness: 0.75, roughness: 0.4 } );
+                            var material = new THREE.MeshStandardMaterial( customMaterials[str] );
                             var mesh =  new THREE.Mesh( geometry, material );
                             mesh.animations = [];
-                            mesh.name = 'spade';
-                            // mesh.position.x = -100;
-                            mesh.position.x = Math.floor(Math.random()*680)-340;
-                            mesh.position.y = Math.floor(Math.random()*100)-100;
-                            mesh.position.z = Math.floor(Math.random()*400)-200;
-                            mesh.rotation.x += Math.random();
-                            mesh.rotation.y += Math.random();
-
-                            resolve(mesh);
-                        },
-                        // called while loading is progressing
-                        function ( xhr ) {
-                    
-                            console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
-                    
-                        },
-                        // called when loading has errors
-                        function ( error ) {
-                    
-                            reject( 'An error happened' );
-                    
-                        }
-                    );
-                    
-                });
-            },
-            clover: () =>{
-                return $q((resolve, reject) =>{
-
-                    var loader = new THREE.JSONLoader();
-                    // Load a glTF resource
-                    loader.load(
-                        // resource URL
-                        './models/clover.json',
-                        // called when the resource is loaded
-                        function(geometry, m){
-                            console.log('clover++');
-                            
-                            var material = new THREE.MeshStandardMaterial( { color: 0x01bf20, metalness: 0.5, roughness: 0.1 } );
-                            var mesh =  new THREE.Mesh( geometry, material );
-                            mesh.animations = [];
-                            mesh.name = 'clover';
+                            mesh.name = str;
                             // mesh.position.x = -100;
                             mesh.position.x = Math.floor(Math.random()*680)-340;
                             mesh.position.y = Math.floor(Math.random()*100)-100;
@@ -303,15 +301,13 @@ angular.module('myApp')
                 });
             },
             getCustomMaterial: (str)=>{
-                var material;
-
-                if(str === 'spade'){
-                    material = new THREE.MeshStandardMaterial( { color: 0x222222, metalness: 0.75, roughness: 0.4 } );
-                } else {
-                    material = new THREE.MeshStandardMaterial( { color: 0x01bf20, metalness: 0.5, roughness: 0.1 } );
-                }
+                
+                var material = new THREE.MeshStandardMaterial(customMaterials[str]);
 
                 return material;
+            },
+            getCustomTexture: (index)=>{
+                return loadedTextures[index];
             }
         }
 

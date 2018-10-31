@@ -18,6 +18,27 @@ angular.module('myApp')
                         .hideDelay(3000)
                         .highlightClass('md-accent')
                 );
+            },
+            getTextures: () =>{
+                var arr = [
+                    {
+                        name: 'None',
+                        img: './images/blank.jpg',
+                        selected: false
+                    },
+                    {
+                        name: 'Checkers',
+                        img: 'images/checkerBoard.jpg',
+                        selected: false
+                    }
+                ];
+
+                return arr;
+            },
+            generateRandId: ()=>{
+                let r = Math.random().toString(36).substring(7);
+                
+                return r;
             }
         }
 

@@ -24,13 +24,25 @@ angular.module('myApp')
 
             //<<< Loading models from json files >>>
 
-            meshFactory.spades().then(function(mesh) {//Creating Spades
+            meshFactory.getExternalMesh('spade').then(function(mesh) {//Creating Spades
                 sceneFactory.addN(meshCount, mesh);
             }, function(reason) {
                 console.log('Failed: '+ reason);
             });
             
-            meshFactory.clover().then(function(mesh) {//Creating Clovers
+            meshFactory.getExternalMesh('clover').then(function(mesh) {//Creating Clovers
+                sceneFactory.addN(meshCount, mesh);
+            }, function(reason) {
+                console.log('Failed: '+ reason);
+            });
+            
+            meshFactory.getExternalMesh('heart').then(function(mesh) {//Creating Hearts
+                sceneFactory.addN(meshCount, mesh);
+            }, function(reason) {
+                console.log('Failed: '+ reason);
+            });
+            
+            meshFactory.getExternalMesh('diamond').then(function(mesh) {//Creating Diamonds
                 sceneFactory.addN(meshCount, mesh);
             }, function(reason) {
                 console.log('Failed: '+ reason);
@@ -52,27 +64,27 @@ angular.module('myApp')
 
             //<<< Creating models with threejs code >>>
             
-            for(var i = 0; i < meshCount; i++){//Creating Hearts
-                hearts.push(meshFactory.heart());
-                hearts[i].animations.push('moveInfRight');
-                hearts[i].animations.push('moveInfUp');
-                hearts[i].animations.push('rotate');
-            }
+            // for(var i = 0; i < meshCount; i++){//Creating Hearts
+            //     hearts.push(meshFactory.heart());
+            //     hearts[i].animations.push('moveInfRight');
+            //     hearts[i].animations.push('moveInfUp');
+            //     hearts[i].animations.push('rotate');
+            // }
                 
-            for(var i = 0; i < meshCount; i++){//Creating Diamonds
-                diamonds.push(meshFactory.diamond());
-                diamonds[i].animations.push('moveInfRight');
-                diamonds[i].animations.push('moveInfUp');
-                diamonds[i].animations.push('rotate');
-            }
+            // for(var i = 0; i < meshCount; i++){//Creating Diamonds
+            //     diamonds.push(meshFactory.diamond());
+            //     diamonds[i].animations.push('moveInfRight');
+            //     diamonds[i].animations.push('moveInfUp');
+            //     diamonds[i].animations.push('rotate');
+            // }
             //<<< END of Create>>>
 
             sceneFactory.add(land);
             sceneFactory.add(particleLight);
             sceneFactory.add(meshFactory.helperCude());
 
-            sceneFactory.addMeshArray(hearts);
-            sceneFactory.addMeshArray(diamonds);
+            // sceneFactory.addMeshArray(hearts);
+            // sceneFactory.addMeshArray(diamonds);
 
             sceneFactory.add(cube);
             sceneFactory.add( new THREE.AmbientLight( 0x222222 ) );

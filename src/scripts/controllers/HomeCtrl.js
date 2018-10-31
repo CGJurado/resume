@@ -12,16 +12,26 @@ angular.module('myApp')
         $scope.hearts = [];
         $scope.clovers = [];
         $scope.diamonds = [];
-        $scope.selectedItem = 'Spades';
+        $scope.selectedItem = 'spade';
         $scope.beenCustomized = false;
         $scope.sliderSize = 100;
         $scope.sliderColor = {red: 130, green: 130, blue: 130};
+        $scope.textures = helper.getTextures();
         var currentCubeRotation = 0;
         var currentSideIndex = 0;
         var customContainer = $document[0].querySelector('.customBox');
         var customMesh;
+        
+        // instantiate a texture loader
+        var loader = new THREE.TextureLoader();
+        //allow cross origin loading
+        loader.crossOrigin = '';
 
-        $scope.sides = [{name: 'Spades', class: 'm1'}, {name: 'Hearts', class: 'm2'}, {name: 'Clovers', class: 'm3'}, {name: 'Diamonds', class: 'm4'}];
+        $scope.getRandId = function(){
+            return helper.generateRandId();
+        };
+
+        $scope.sides = [{name: 'spade', class: 'm1'}, {name: 'heart', class: 'm2'}, {name: 'clover', class: 'm3'}, {name: 'diamond', class: 'm4'}];
 
         $scope.rotateCube = function(direction){
             if(direction == 'right'){
@@ -70,7 +80,7 @@ angular.module('myApp')
             
             $scope.spades.push(arg.value);
             currentSideIndex = 0;
-            $scope.selectedItem = 'Spades';
+            $scope.selectedItem = 'spade';
         });
         $scope.$on('heart', function(action, arg){
             var rotateToHearts;
@@ -86,7 +96,7 @@ angular.module('myApp')
 
             $scope.hearts.push(arg.value);
             currentSideIndex = 1;
-            $scope.selectedItem = 'Hearts';
+            $scope.selectedItem = 'heart';
         });
         $scope.$on('clover', function(action, arg){
             var rotateToClovers;
@@ -102,7 +112,7 @@ angular.module('myApp')
 
             $scope.clovers.push(arg.value);
             currentSideIndex = 2;
-            $scope.selectedItem = 'Clovers';
+            $scope.selectedItem = 'clover';
         });
         $scope.$on('diamond', function(action, arg){
             var rotateToDiamonds;
@@ -118,42 +128,43 @@ angular.module('myApp')
 
             $scope.diamonds.push(arg.value);
             currentSideIndex = 3;
-            $scope.selectedItem = 'Diamonds';
+            $scope.selectedItem = 'diamond';
         });
 
-        $scope.$on('returnMesh', function(action, arg){
-            sceneFactory.add($scope[arg.value.type][arg.value.index]);
-            helper.showToast($scope[arg.value.type][arg.value.index].name +' returned to scene!');
-            $scope[arg.value.type].splice(arg.value.index, 1);
+        $scope.returnMeshToScene = function(meshInfo){
+            sceneFactory.add($scope[meshInfo.type][meshInfo.index]);
+            helper.showToast($scope[meshInfo.type][meshInfo.index].name +' returned to scene!');
+            $scope[meshInfo.type].splice(meshInfo.index, 1);
             $scope.$apply();
-        });
+        };
 
-        $scope.$on('addCustomMesh', function(action, arg){
+        $scope.addCustomMesh = function(meshInfo){
             
             if($scope.beenCustomized){
                 helper.showToast("There's already a Mesh been Customized!");
             } else {
-                customMesh = $scope[arg.value.type][arg.value.index];
+                customMesh = $scope[meshInfo.type][meshInfo.index];
                 
                 if(typeof customMesh.isCustom === 'undefined'){
-                    if(customMesh.name === 'clover' || customMesh.name === 'spade')
-                        customMesh.material = meshFactory.getCustomMaterial(customMesh.name);
-
+                    customMesh.material = meshFactory.getCustomMaterial(customMesh.name);
+                    customMesh.svgIMG = $scope.textures[0].img;
                     customMesh.isCustom = true;
                 }
+
+                console.log(customMesh);
 
                 customSceneFactory.add(customMesh);
 
                 setPropertiesFromMesh(customMesh);
 
-                helper.showToast($scope[arg.value.type][arg.value.index].name +' ready to customize!');
-                $scope[arg.value.type].splice(arg.value.index, 1);                
+                helper.showToast(customMesh.name +' ready to customize!');
+                $scope[meshInfo.type].splice(meshInfo.index, 1);
 
                 $scope.beenCustomized = true;
                 $scope.$apply();
             }
             
-        });
+        };
 
         $scope.$watch('sliderSize', function(value){
             if($scope.beenCustomized){
@@ -190,6 +201,14 @@ angular.module('myApp')
             customSceneFactory.del(customMesh);
             $scope.$broadcast(customMesh.name, {value: customMesh});
             $scope.beenCustomized = false;
+        };
+
+        $scope.applyCustomTexture = function(index){
+            
+            $scope.textures[index].selected = true;
+            customMesh.material.map = meshFactory.getCustomTexture(index);
+            customMesh.svgIMG = $scope.textures[index].img;
+            customMesh.material.map.needsUpdate = true;
         };
 
         customSceneFactory.init(customContainer);

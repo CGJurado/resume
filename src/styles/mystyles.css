@@ -39,15 +39,23 @@ body.md-toast-animating{ overflow: visible!important }
     margin-top: 5px;
     height: 79px;
     border:2px solid #5a5856;
+    fill: currentColor!important;
 }
 
-.itemBox md-icon{
+.itemBox .saturate{
     position: relative;
-    cursor: move;
+    cursor: grab;
     height: 50px;
     width: 50px;
     z-index: 60;
 }
+
+/* .checkerPattern{
+    fill: currentColor;
+}
+.blankPattern{
+    fill: currentColor;
+} */
 
 .customBox{
     background-color: #28292b;

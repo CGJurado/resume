@@ -65,11 +65,6 @@ angular.module('myApp')
                 newMesh.position.z = 0;
                 newMesh.rotation.x = 0;
                 newMesh.rotation.y = 0;
-                if(newMesh.name === 'heart'){
-                    newMesh.position.x = -3;
-                    newMesh.position.y = 4;
-                    newMesh.rotation.x = 3.14;
-                }
 
                 scene.add( newMesh );
             },

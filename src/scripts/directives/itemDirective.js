@@ -2,9 +2,8 @@ angular.module('myApp')
 
 .directive('item', [
     '$window',
-    'helper',
     '$document',
-    function($window, helper, $document) {
+    function($window, $document) {
         return {
             link: linker
         };
@@ -12,28 +11,15 @@ angular.module('myApp')
         function linker(scope, element, attr) {
             var startX = 0, x = 0;
             var startY = 0, y = 0;
-            // element.text('(X:'+ x +',Y:'+ y +')');
-    
-            // element.css({
-            //     position: 'relative',
-            //     cursor: 'pointer',
-            //     height: '50px',
-            //     width: '50px',
-            //     zIndex: '60',
-            //     color: attr.color
+            
+            // element.ready(function(){
+            //     element[0].insertAdjacentHTML('beforeend', '<svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"width="50px" height="50px" viewBox="0 0 512 512"><defs> <pattern id="blankPattern" patternUnits="userSpaceOnUse" width="220" height="220"><rect class="blankPattern" height="100%" width="100%" fill="blue"/><image style="opacity: 0.5;" href="./images/blank.jpg" x="0" y="0" width="220" height="220"> </image> </pattern> <pattern id="checkerPattern" patternUnits="userSpaceOnUse" width="220" height="220"><rect class="checkerPattern" height="100%" width="100%" fill="'+attr.svgcolor+'"/><image style="opacity: 0.5;" href="./images/checkerBoard.jpg" x="0" y="0" width="220" height="220"> </image></pattern> </defs><g><path class="pathClass" fill="url(#blankPattern)" d="M256,0L96,256l160,256l160-256L256,0z"/></g></svg>');
             // });
-
-            // if(attr.custom){
-            //     element.css({
-            //         backgroundColor: attr.color
-            //     })
-            // }
 
             var hammer = new Hammer(element[0]);
             hammer.add( new Hammer.Pan({ direction: Hammer.DIRECTION_ALL, threshold: 0 }) );
     
             hammer.on('panstart', function(event) {
-                console.log('item index: '+ attr.index);
                 startX = event.center.x - x;
                 startY = event.center.y - y;
             });
@@ -64,7 +50,8 @@ angular.module('myApp')
                         top: y + 'px',
                         left:  x + 'px'
                     });
-                    helper.broadcast('returnMesh', {type: attr.name, index: attr.index});
+                    // helper.broadcast('returnMesh', {type: attr.name, index: attr.index});
+                    scope.returnMeshToScene({type: attr.name, index: attr.index});
                 } else if(nearRightCanvas || nearLeftCanvas){        //Inside Custom Scene
                     x = 0;
                     y = 0;
@@ -72,7 +59,7 @@ angular.module('myApp')
                         top: y + 'px',
                         left:  x + 'px'
                     });
-                    helper.broadcast('addCustomMesh', {type: attr.name, index: attr.index});
+                    scope.addCustomMesh({type: attr.name, index: attr.index});
                 } else{                                            //Back to init position
                     x = 0;
                     y = 0;
