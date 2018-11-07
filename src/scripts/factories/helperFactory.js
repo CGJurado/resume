@@ -70,7 +70,7 @@ angular.module('myApp')
 
                 return $mdDialog.show({
                     locals: {customMesh: mesh},
-                    controller: SlidersCtrl,
+                    controller: ['$scope', '$mdDialog', 'customMesh', SlidersCtrl],
                     templateUrl: './dialog-sliders.html',
                     parent: angular.element(document.body),
                     targetEvent: ev,

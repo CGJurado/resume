@@ -86,7 +86,7 @@ angular.module('myApp')
         $scope.showInfoDialog = function(ev) {
             $mdDialog.show({
                 locals: {tabSelected: ev.currentTarget.id},
-                controller: DialogController,
+                controller: ['$scope', '$mdDialog', 'tabSelected', 'sceneFactory', DialogController],
                 templateUrl: 'dialog-info.html',
                 parent: angular.element(document.body),
                 targetEvent: ev,

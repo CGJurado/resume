@@ -265,7 +265,7 @@ angular.module('myApp')
         $scope.showTexturesDialog = function(ev){
             $mdDialog.show({
                 locals: {textures: $scope.textures, customMesh: customMesh},
-                controller: TexDialogCtrl,
+                controller: ['$scope', 'meshFactory', 'textures', 'customMesh', TexDialogCtrl],
                 templateUrl: './dialog-textures.html',
                 parent: angular.element(document.body),
                 targetEvent: ev,

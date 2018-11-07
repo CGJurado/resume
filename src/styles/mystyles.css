@@ -71,8 +71,8 @@ body.md-toast-animating{ overflow: visible!important }
     padding: 1em;
 }
 .avatar img{
-    width: 12em;
-    height: 12em;
+    width: 12vw;
+    height: 12vw;
     border-radius: 50%;
 }
 
