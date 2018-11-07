@@ -5,7 +5,7 @@ angular.module('myApp')
     'helper',
     function(animationFactory, helper){
         
-        var camera, scene, renderer, controls;
+        var camera, scene, renderer, controls, id;
         var customMeshPos, customMeshRot;
 
         var obj = {
@@ -43,7 +43,7 @@ angular.module('myApp')
 
                 function animate() {
 
-                    requestAnimationFrame( animate );
+                    id = requestAnimationFrame( animate );
 
                     controls.update();
 
@@ -78,6 +78,10 @@ angular.module('myApp')
                 oldMesh.rotation.y = customMeshRot.y;
 
                 scene.remove( oldMesh );
+            },
+            stopRender: () =>{
+                renderer.clear();
+                cancelAnimationFrame(id);
             },
             getCamera: () =>{
                 return camera;

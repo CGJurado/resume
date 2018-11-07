@@ -2,8 +2,8 @@ angular.module('myApp')
 .controller('HeaderCtrl', [
     '$scope',
     '$state',
-    '$document',
-    function($scope, $state, $document){
+    '$mdDialog',
+    function($scope, $state, $mdDialog){
 
         $scope.currentNavItem = 'page1';
         $scope.secondTabDisabled = false;
@@ -33,29 +33,31 @@ angular.module('myApp')
             
             addBtn.fadeIn({duration: 300, queue: false});
             addBtn.css({
-                top: menuBtn.offset().top
+                bottom: '20px'
             });
             addBtn.animate({
-                top: '-=100'
+                bottom: '+=100'
             }, {duration:300, queue: false});
 
 
             infoBtn.fadeIn({duration: 300, queue: false});
             infoBtn.css({
-                top: menuBtn.offset().top,
-                left: menuBtn.offset().left
+                bottom: '20px',
+                right: '20px'
+                // bottom: menuBtn.offset().bottom,
+                // right: menuBtn.offset().right
             });
             infoBtn.animate({
-                top: '-=60',
-                left: "-=70"
+                bottom: '+=60',
+                right: "+=70"
             }, {duration:300, queue: false});
 
             gitBtn.fadeIn({duration: 300, queue: false});
             gitBtn.css({
-                left: menuBtn.offset().left
+                right: '20px'
             });
             gitBtn.animate({
-                left: "-=100"
+                right: "+=100"
             }, {duration:300, queue: false});
             
         }
@@ -80,5 +82,47 @@ angular.module('myApp')
         menuBtn.focusout(function(){
             $scope.openFabMenu();
         });
+
+        $scope.showInfoDialog = function(ev) {
+            $mdDialog.show({
+                locals: {tabSelected: ev.currentTarget.id},
+                controller: DialogController,
+                templateUrl: 'dialog-info.html',
+                parent: angular.element(document.body),
+                targetEvent: ev,
+                escapeToClose: true,
+                clickOutsideToClose:true
+            })
+                // .then(function(answer) {
+                //   $scope.status = 'You said the information was "' + answer + '".';
+                // }, function() {
+                //   $scope.status = 'You cancelled the dialog.';
+                // });
+        };
+        
+        function DialogController($scope, $mdDialog, tabSelected, sceneFactory) {
+
+            if(tabSelected === 'addBtn'){
+                $scope.tabSelected = 1;
+            } else {
+                $scope.tabSelected = 0;
+            }
+
+            $scope.stopTime = function(){
+                sceneFactory.stopTime();
+            }
+
+            $scope.hide = function() {
+                $mdDialog.hide();
+            };
+
+            $scope.cancel = function() {
+                $mdDialog.cancel();
+            };
+
+            $scope.answer = function(answer) {
+                $mdDialog.hide(answer);
+            };
+        }
     }
 ]);

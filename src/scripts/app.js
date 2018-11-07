@@ -24,13 +24,13 @@ angular.module('myApp', ['ui.router', 'ngMaterial', 'ngMessages'])
             })
             // route for the aboutme page
             .state('app.aboutme', {
-                url:'aboutme',
-                views: {
-                    'content@': {
-                        templateUrl : 'aboutme.html',
-                        controller  : 'AboutCtrl'                  
-                    }
-                }
+                url:'aboutme'
+                // views: {
+                //     'content@': {
+                //         templateUrl : 'aboutme.html',
+                //         controller  : 'AboutCtrl'                  
+                //     }
+                // }
             });
             
         $urlRouterProvider.otherwise('/');

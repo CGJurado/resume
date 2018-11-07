@@ -1,166 +1,136 @@
 
 <!-- <md-content class="md-padding" layout="column"> -->
+<section class="cubeHome">
+    <div id="cubeContainer">
+        <div id="cube" class="show-front panels-backface-invisible" ng-style="outerCubeCSS" ng-class="{'panels-backface-invisible': visibilityToggle}">
+            <figure cube-faces index="0" class="m1">
 
     <!-- <div layout="row" layout-align="space-around"> -->
 
-        <div layout="row" layout-align="start center">
-            <md-button class="md-warn md-raised md-hue-2" ng-click="rotateCube('left')">Left</md-button>
-            <section class="cubeContainer">
-                <div id="cube" class="show-front panels-backface-invisible" ng-style="calendarCSS" ng-class="{'panels-backface-invisible': visibilityToggle}">
-                    <figure ng-repeat="side in sides track by $index" ng-class="side.class">{{side.name}}s</figure>
+    <div layout="row" layout-align="center center">
+        <div flex-gt-md="25" flex="none" layout="row" layout-align="end">
+            <md-button class="md-primary md-raised md-hue-2" ng-click="rotateCube('left')">
+                <md-tooltip md-visible="false" md-direction="top">Left</md-tooltip>
+                <md-icon md-svg-src="images/icons/arrow_left.svg"></md-icon>
+            </md-button>
+        </div>
+        <div flex-gt-md="50" flex>
+            <section class="cubeSection">
+                <div id="cubeContainer">
+                    <div id="cube" class="cubeBorders show-front panels-backface-invisible" ng-style="cubeCSS" ng-class="{'panels-backface-invisible': visibilityToggle}">
+                        <figure cube-faces ng-repeat="side in sides track by $index" index="{{$index}}" ng-class="side.class">
+                            <div layout="row" layout-align="center" class="itemBox">
+                                <collected-cards name="{{side.name}}"></collected-cards>
+                            </div>
+                        </figure>
+                    </div>
                 </div>
             </section>
-            <md-button class="md-warn md-raised md-hue-2" ng-click="rotateCube('right')">Right</md-button>
         </div>
-        <div layout="row" layout-align="center" class="itemBox">
-
-            <div layout="row" ng-show="selectedItem == 'spade'">                
-                <span ng-if="spades.length == 0">No spades collected</span>
-                <div ng-repeat="spade in spades track by $index" ng-init="spade.svgID = getRandId()">
-                    <div index="{{$index}}" length="{{spades.length}}" name="spades" ng-attr-style="color:{{spade.material.color.getStyle()}};" class="saturate" item>
-                        <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                        width="50px" height="50px" viewBox="0 0 512 512">
-                            <defs> 
-                                <pattern id="{{spade.svgID}}" patternUnits="userSpaceOnUse" width="200" height="200">
-                                    <rect class="blankPattern" height="100%" width="100%" fill="currentColor"/>
-                                    <image style="opacity: 0.5;" href="{{spade.svgIMG}}" x="0" y="0" width="600" height="600"> </image> 
-                                </pattern> 
-                            </defs>
-                            <g>
-                                <path class="pathClass" fill="url(#{{spade.svgID}})" d="M302.728,390.351c16.49,15.934,26.368,25.759,55.905,24.541c43.494-1.783,83.871-25.459,106.364-62.729
-                                c38.78-64.247,17.576-128.53-23.702-166.824L272.705,6.528c-9.507-8.704-24.082-8.704-33.589,0L68.073,185.34
-                                c-40.13,37.226-57.256,99.037-23.729,161.483c21.283,39.645,61.767,66.357,106.726,68.087c29.281,1.121,40.801-8.66,57.759-24.488
-                                c4.458-4.167,11.767-1.033,11.767,5.076l0.009,29.987c0,16.172-4.228,32.071-12.253,46.115l-15.519,27.154
-                                c-3.354,5.888,0.892,13.206,7.671,13.206h110.813c6.78,0,11.034-7.318,7.671-13.206l-15.519-27.154
-                                c-8.024-14.045-12.244-29.943-12.244-46.115v-30.296C291.226,389.213,298.429,386.202,302.728,390.351"/>
-                            </g>
-                        </svg>    
-                    </div>
-                </div>
-            </div>
-            <div layout="row" ng-show="selectedItem == 'heart'">
-                <span ng-if="hearts.length == 0">No hearts collected</span>
-                <div ng-repeat="heart in hearts track by $index" ng-init="heart.svgID = getRandId()">
-                    <div index="{{$index}}" length="{{hearts.length}}" name="hearts" ng-attr-style="color:{{heart.material.color.getStyle()}};" class="saturate" item>
-                            <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                            width="50px" height="50px" viewBox="0 0 51.997 51.997">
-                                <defs> 
-                                    <pattern id="{{heart.svgID}}" patternUnits="userSpaceOnUse" width="220" height="220">
-                                        <rect class="blankPattern" height="100%" width="100%" fill="currentColor"/>
-                                        <image style="opacity: 0.5;" href="{{heart.svgIMG}}" x="0" y="0" width="50" height="50"> </image> 
-                                    </pattern> 
-                                </defs>
-                                <g>
-                                    <path class="pathClass" fill="url(#{{heart.svgID}})" d="M51.911,16.242C51.152,7.888,45.239,1.827,37.839,1.827c-4.93,0-9.444,2.653-11.984,6.905
-                                    c-2.517-4.307-6.846-6.906-11.697-6.906c-7.399,0-13.313,6.061-14.071,14.415c-0.06,0.369-0.306,2.311,0.442,5.478
-                                    c1.078,4.568,3.568,8.723,7.199,12.013l18.115,16.439l18.426-16.438c3.631-3.291,6.121-7.445,7.199-12.014
-                                    C52.216,18.553,51.97,16.611,51.911,16.242z M15.999,9.904c-4.411,0-8,3.589-8,8c0,0.553-0.447,1-1,1s-1-0.447-1-1
-                                    c0-5.514,4.486-10,10-10c0.553,0,1,0.447,1,1S16.551,9.904,15.999,9.904z"/>
-                                </g>
-                            </svg>                        
-                    </div>
-                </div>
-            </div>
-            <div layout="row" ng-show="selectedItem == 'clover'">
-                <span ng-if="clovers.length == 0">No clovers collected</span>
-                <div ng-repeat="clover in clovers track by $index" ng-init="clover.svgID = getRandId()">
-                    <div index="{{$index}}" length="{{clovers.length}}" name="clovers" ng-attr-style="color:{{clover.material.color.getStyle()}};" class="saturate" item>
-                            <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                            width="50px" height="50px" viewBox="0 0 512 512">
-                                <defs> 
-                                    <pattern id="{{clover.svgID}}" patternUnits="userSpaceOnUse" width="200" height="200">
-                                        <rect class="blankPattern" height="100%" width="100%" fill="currentColor"/>
-                                        <image style="opacity: 0.5;" href="{{clover.svgIMG}}" x="0" y="0" width="600" height="600"> </image> 
-                                    </pattern> 
-                                </defs>
-                                <g>
-                                    <path class="pathClass" fill="url(#{{clover.svgID}})" d="M393.414,196.386c-29.516,0-56.043,12.298-74.926,32.347c-7.998,8.492-21.881,18.556-36.899,27.406
-                                    c7.056-26.935,29.339-60.851,44.813-75.729c19.82-19.085,31.992-45.915,31.992-75.75C358.398,47.213,312.656,0.612,256.001,0
-                                    c-56.66,0.611-102.398,47.213-102.398,104.659c0,29.836,12.172,56.665,31.993,75.75c15.477,14.878,37.76,48.794,44.814,75.728
-                                    c-15.021-8.85-28.903-18.913-36.9-27.405c-18.884-20.049-45.41-32.347-74.925-32.347c-57.193,0-103.54,46.832-103.54,104.664
-                                    c0,57.819,46.346,104.669,103.54,104.669c29.521,0,56.041-12.678,74.925-32.726c8.402-8.936,23.222-20.069,39.146-29.316
-                                    c-1.501,73.848-36.766,128.084-72.659,149.453V512h96.005h96.002v-18.87c-35.896-21.368-71.158-75.606-72.658-149.453
-                                    c15.926,9.247,30.742,20.384,39.145,29.316c18.885,20.047,45.404,32.726,74.928,32.726c57.191,0,103.537-46.85,103.537-104.669
-                                    C496.953,243.218,450.609,196.386,393.414,196.386z"/>
-                                </g>
-                            </svg>
-                    </div>
-                </div>
-            </div>
-            <div layout="row" ng-show="selectedItem == 'diamond'">
-                <span ng-if="diamonds.length == 0">No diamonds collected</span>
-                <div ng-repeat="diamond in diamonds track by $index" ng-init="diamond.svgID = getRandId()">
-                    <div index="{{$index}}" length="{{diamonds.length}}" name="diamonds" ng-attr-style="color:{{diamond.material.color.getStyle()}};" class="saturate" item>
-                            <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                            width="50px" height="50px" viewBox="0 0 512 512">
-                                <defs> 
-                                    <pattern id="{{diamond.svgID}}" patternUnits="userSpaceOnUse" width="200" height="200">
-                                        <rect class="blankPattern" height="100%" width="100%" fill="currentColor"/>
-                                        <image style="opacity: 0.5;" href="{{diamond.svgIMG}}" x="0" y="0" width="600" height="600"> </image> 
-                                    </pattern> 
-                                </defs>
-                                <g>
-                                    <path class="pathClass" fill="url(#{{diamond.svgID}})" d="M256,0L96,256l160,256l160-256L256,0z"/>
-                                </g>
-                            </svg>
-                    </div>
-                </div>
-            </div>
+        <div flex-gt-md="25" flex="none" layout="row" layout-align="start">
+            <md-button class="md-primary md-raised md-hue-2" ng-click="rotateCube('right')">
+                <md-tooltip md-visible="false" md-direction="top">Right</md-tooltip>
+                <md-icon md-svg-src="images/icons/arrow_right.svg"></md-icon>
+            </md-button>
         </div>
+    </div>
 <!-- <md-content class="md-padding" layout="column"> -->
-        <div layout="row">
-            <div flex layout="column" layout-align="center end">
+    <div layout="row" layout-align="center">
+        <div flex-gt-md="60" flex layout="row" class="customContainer">
+            
+            <md-button ng-disabled="!beenCustomized" class="customBtnTrigger md-accent md-fab" ng-click="showTexturesDialog($event)">
+                <md-tooltip md-visible="false" md-direction="bottom">Textures Dialog</md-tooltip>
+                <md-icon md-svg-src="images/icons/texture.svg"></md-icon>
+            </md-button>
+            <div flex layout="column" hide show-gt-md layout-align="center center">
+                <h3>Select a texture</h3>
                 <md-list flex>
                     <md-list-item ng-disabled="!beenCustomized" ng-repeat="texture in textures track by $index" ng-click="applyCustomTexture($index)" class="noright">
                         <img alt="{{ texture.name }}" ng-src="{{ texture.img }}" class="md-avatar" />
                         <p>{{ texture.name }}</p>
-                        <!-- <md-checkbox class="md-secondary" ng-model="texture.selected"></md-checkbox> -->
-                        <md-switch ng-disabled="!beenCustomized" ng-model="texture.selected" aria-label="switch"></md-switch>
+                        <md-checkbox ng-disabled="!beenCustomized" class="md-secondary" ng-model="texture.selected" ng-click="applyCustomTexture($index)" aria-label="checkbox"></md-checkbox>
                     </md-list-item>
                 </md-list>
             </div>
-            <div flex layout="column" layout-align="center center">
 
+            <div flex layout="column" layout-align="center center" layout-margin>
+
+                <h2>Drop items here</h2>
                 <div class="customBox"></div>
-                <md-button class="md-raised md-hue-2" ng-click="saveCustomMesh()">Finish/Save</md-button>
+                <md-button ng-disabled="!beenCustomized" class="md-accent md-raised md-hue-2" ng-click="saveCustomMesh()">Finish/Save</md-button>
 
             </div>
-            <div flex layout="row">
-                <!-- Size slider -->
-                <md-slider-container ng-disabled="!beenCustomized">
-                    <md-input-container>
-                        <input type="number" ng-model="sliderSize" aria-label="size" aria-controls="size-slider">
-                    </md-input-container>
-                    <md-slider md-discrete ng-model="sliderSize" min="0" max="200" ng-readonly="!beenCustomized" aria-label="size" step="10" id="size-slider" class="md-accent" md-vertical></md-slider>
-                    <h5>Size</h5>
-                </md-slider-container>
-                <!-- Red color slider -->
-                <md-slider-container ng-disabled="!beenCustomized">
-                    <md-input-container>
-                        <input type="number" ng-model="sliderColor.red" aria-label="red" aria-controls="red-slider">
-                    </md-input-container>
-                    <md-slider md-discrete ng-model="sliderColor.red" min="0" max="255" ng-readonly="!beenCustomized" aria-label="red" step="10" id="red-slider" class="md-accent" md-vertical></md-slider>
-                    <h5 ng-attr-style="color: rgb({{sliderColor.red}},0,0)">Red</h5>
-                </md-slider-container>
-                <!-- Green color slider -->
-                <md-slider-container ng-disabled="!beenCustomized">
-                    <md-input-container>
-                        <input type="number" ng-model="sliderColor.green" aria-label="green" aria-controls="green-slider">
-                    </md-input-container>
-                    <md-slider md-discrete ng-model="sliderColor.green" min="0" max="255" ng-readonly="!beenCustomized" aria-label="green" step="10" id="green-slider" class="md-accent" md-vertical></md-slider>
-                    <h5 ng-attr-style="color: rgb(0, {{sliderColor.green}}, 0)">Green</h5>
-                </md-slider-container>
-                <!-- Blue color slider -->
-                <md-slider-container ng-disabled="!beenCustomized">
-                    <md-input-container>
-                        <input type="number" ng-model="sliderColor.blue" aria-label="blue" aria-controls="blue-slider">
-                    </md-input-container>
-                    <md-slider md-discrete ng-model="sliderColor.blue" min="0" max="255" ng-readonly="!beenCustomized" aria-label="blue" step="10" id="blue-slider" class="md-accent" md-vertical></md-slider>
-                    <h5 ng-attr-style="color: rgb(0,0, {{sliderColor.blue}})">Blue</h5>
-                </md-slider-container>
-                
+
+            <div flex layout="column" hide show-gt-md layout-align="center center" layout-fill>
+                <div layout="row">
+                    <h3>Change size and color</h3>
+                </div>
+                <md-content layout="row" style="padding-left: 14px;">
+                    <!-- Size slider -->
+                    <md-slider-container ng-disabled="!beenCustomized">
+                        <md-input-container>
+                            <input type="number" ng-model="sliderSize" aria-label="size" aria-controls="size-slider">
+                        </md-input-container>
+                        <md-slider md-discrete ng-model="sliderSize" min="20" max="200" ng-readonly="!beenCustomized" aria-label="size" step="10" id="size-slider" class="md-accent" md-vertical></md-slider>
+                        <h5>Size</h5>
+                    </md-slider-container>
+                    <!-- Red color slider -->
+                    <md-slider-container ng-disabled="!beenCustomized" id="redSlider">
+                        <md-input-container>
+                            <input type="number" ng-model="sliderColor.red" aria-label="red" aria-controls="red-slider">
+                        </md-input-container>
+                        <md-slider md-discrete ng-model="sliderColor.red" min="0" max="255" ng-readonly="!beenCustomized" aria-label="red" step="10" id="red-slider" class="md-accent" md-vertical></md-slider>
+                        <h5 ng-attr-style="color: rgb({{sliderColor.red}},0,0)">Red</h5>
+                    </md-slider-container>
+                    <!-- Green color slider -->
+                    <md-slider-container ng-disabled="!beenCustomized" id="greenSlider">
+                        <md-input-container>
+                            <input type="number" ng-model="sliderColor.green" aria-label="green" aria-controls="green-slider">
+                        </md-input-container>
+                        <md-slider md-discrete ng-model="sliderColor.green" min="0" max="255" ng-readonly="!beenCustomized" aria-label="green" step="10" id="green-slider" class="md-accent" md-vertical></md-slider>
+                        <h5 ng-attr-style="color: rgb(0, {{sliderColor.green}}, 0)">Green</h5>
+                    </md-slider-container>
+                    <!-- Blue color slider -->
+                    <md-slider-container ng-disabled="!beenCustomized" id="blueSlider">
+                        <md-input-container>
+                            <input type="number" ng-model="sliderColor.blue" aria-label="blue" aria-controls="blue-slider">
+                        </md-input-container>
+                        <md-slider md-discrete ng-model="sliderColor.blue" min="0" max="255" ng-readonly="!beenCustomized" aria-label="blue" step="10" id="blue-slider" class="md-accent" md-vertical></md-slider>
+                        <h5 ng-attr-style="color: rgb(0,0, {{sliderColor.blue}})">Blue</h5>
+                    </md-slider-container>
+                </md-content>
+            </div>
+            <md-button ng-disabled="!beenCustomized" class="customBtnTrigger md-accent md-fab" ng-click="showSlidersDialog($event)">
+                <md-tooltip md-visible="false" md-direction="bottom">Slider Dialog</md-tooltip>
+                <md-icon md-svg-src="images/icons/slider.svg"></md-icon>
+            </md-button>
+
+        </div>
+    </div>
+</figure>
+<figure cube-faces index="3" class="m4">
+    <md-content layout="row" layout-align="center" layout-margin>
+        <div flex-gt-md="60" layout-align="start center" flex layout="row" class="avatar">
+            <img ng-src="./images/capture.png" alt="Profile" layout-margin/>
+            <div layout="column" layout-align="center start" layout-margin>
+                <h2>{{ detail.who }}</h2>
+                <md-divider style="width: 100%;"></md-divider>
+                <h3>{{ detail.what }}</h3>
+                <h4>{{ detail.exp }}</h4>
+                <p>{{ detail.notes }}</p>
+                <span><md-icon md-svg-src="images/icons/mail.svg"></md-icon> {{detail.email}}</span>
             </div>
         </div>
+    </md-content>
+    <div style="height:6em;"></div>
+    <md-divider></md-divider>
+    <div layout="column" layout-align="end center" layout-margin>
+        <span>© 2018 {{ detail.who }}.  All rights reserved.</span>
+    </div>
+</figure>
+</div>
+</div>
+</section>
 <!-- </md-content> -->
 
     <!-- </div> -->

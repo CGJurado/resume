@@ -4,7 +4,9 @@ angular.module('myApp')
     'sceneFactory',
     'meshFactory',
     '$document',
-    function($scope, sceneFactory, meshFactory, $document){
+    '$state',
+    '$transitions',
+    function($scope, sceneFactory, meshFactory, $document, $state, $transitions){
         
         var land = meshFactory.land();
         var cube = meshFactory.cube();
@@ -16,6 +18,35 @@ angular.module('myApp')
         var diamonds = [];
         var isFullscreen = false;
         $scope.fullSText = 'Go fullscreen';
+
+        if($state.$current.name == 'app.aboutme'){
+            sceneFactory.stopRender();
+            $scope.cubeCSS = {
+                '-webkit-transform':'rotateY(-90deg)',
+                '-moz-transform':'rotateY(-90deg)',
+                '-o-transform':'rotateY(-90deg)',
+                'transform':'rotateY(-90deg)'
+            };
+        }
+
+        $transitions.onSuccess({ to: 'app.aboutme' }, function(transition) {
+            sceneFactory.stopRender();
+            $scope.cubeCSS = {
+                '-webkit-transform':'rotateY(-90deg)',
+                '-moz-transform':'rotateY(-90deg)',
+                '-o-transform':'rotateY(-90deg)',
+                'transform':'rotateY(-90deg)'
+            };
+        });
+        $transitions.onSuccess({ to: 'app' }, function(transition) {
+            sceneFactory.render();
+            $scope.cubeCSS = {
+                '-webkit-transform':'rotateY(0deg)',
+                '-moz-transform':'rotateY(0deg)',
+                '-o-transform':'rotateY(0deg)',
+                'transform':'rotateY(0deg)'
+            };
+        });
 
         var meshCount = 20;
         //<<< When document is ready add models to the scene

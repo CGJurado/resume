@@ -1,0 +1,41 @@
+
+            <div flex layout="column" layout-align="center center" layout-fill>
+                <div layout="row">
+                    <h3>Change size and color</h3>
+                </div>
+                <md-content layout="row" style="padding-left: 14px;">
+                <!-- Size slider -->
+                    <md-slider-container ng-disabled="!beenCustomized">
+                        <md-input-container>
+                            <input type="number" ng-model="sliderSize" aria-label="size" aria-controls="size-slider">
+                        </md-input-container>
+                        <md-slider md-discrete ng-model="sliderSize" min="20" max="200" ng-readonly="!beenCustomized" aria-label="size" step="10" id="size-slider" class="md-accent" md-vertical></md-slider>
+                        <h5>Size</h5>
+                    </md-slider-container>
+                    <!-- Red color slider -->
+                    <md-slider-container ng-disabled="!beenCustomized" id="redSlider">
+                        <md-input-container>
+                            <input type="number" ng-model="sliderColor.red" aria-label="red" aria-controls="red-slider">
+                        </md-input-container>
+                        <md-slider md-discrete ng-model="sliderColor.red" min="0" max="255" ng-readonly="!beenCustomized" aria-label="red" step="10" id="red-slider" class="md-accent" md-vertical></md-slider>
+                        <h5 ng-attr-style="color: rgb({{sliderColor.red}},0,0)">Red</h5>
+                    </md-slider-container>
+                    <!-- Green color slider -->
+                    <md-slider-container ng-disabled="!beenCustomized" id="greenSlider">
+                        <md-input-container>
+                            <input type="number" ng-model="sliderColor.green" aria-label="green" aria-controls="green-slider">
+                        </md-input-container>
+                        <md-slider md-discrete ng-model="sliderColor.green" min="0" max="255" ng-readonly="!beenCustomized" aria-label="green" step="10" id="green-slider" class="md-accent" md-vertical></md-slider>
+                        <h5 ng-attr-style="color: rgb(0, {{sliderColor.green}}, 0)">Green</h5>
+                    </md-slider-container>
+                    <!-- Blue color slider -->
+                    <md-slider-container ng-disabled="!beenCustomized" id="blueSlider">
+                        <md-input-container>
+                            <input type="number" ng-model="sliderColor.blue" aria-label="blue" aria-controls="blue-slider">
+                        </md-input-container>
+                        <md-slider md-discrete ng-model="sliderColor.blue" min="0" max="255" ng-readonly="!beenCustomized" aria-label="blue" step="10" id="blue-slider" class="md-accent" md-vertical></md-slider>
+                        <h5 ng-attr-style="color: rgb(0,0, {{sliderColor.blue}})">Blue</h5>
+                    </md-slider-container>
+                </md-content>
+                <md-button layout-fill class="md-raised md-hue-2" ng-attr-style="background-color: rgb({{sliderColor.red}},{{sliderColor.green}},{{sliderColor.blue}});" ng-click="apply()">Apply</md-button>
+            </div>

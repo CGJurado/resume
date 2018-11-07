@@ -18,7 +18,7 @@ angular.module('myApp')
             'spade': { map: loadedTextures[0], color: 0x222222, metalness: 0.75, roughness: 0.4 },
             'heart': { map: loadedTextures[0], color: 0xff0000, metalness: 0.5, roughness: 0.2 } ,
             'clover': { map: loadedTextures[0], color: 0x01bf20, metalness: 0.5, roughness: 0.1 } ,
-            'diamond': { map: loadedTextures[0], color: 0xff00f2, metalness: 0.5, roughness: 0.2 }
+            'diamond': { map: loadedTextures[0], color: 0xff32be, metalness: 0.5, roughness: 0.2 }
         };
         
         function assignUVs(geometry) {
@@ -178,9 +178,12 @@ angular.module('myApp')
                             console.log(str+'++');
                             
                             var material = new THREE.MeshStandardMaterial( customMaterials[str] );
+                            material.transparent = true;
+                            material.opacity = 0.5;
                             var mesh =  new THREE.Mesh( geometry, material );
                             mesh.animations = [];
                             mesh.name = str;
+                            mesh.textureIndex = 0;
                             // mesh.position.x = -100;
                             mesh.position.x = Math.floor(Math.random()*680)-340;
                             mesh.position.y = Math.floor(Math.random()*100)-100;

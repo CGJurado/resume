@@ -1,0 +1,19 @@
+<div layout="row" ng-show="selectedItem == 'diamond'">
+    <span ng-if="diamonds.length == 0">No diamonds collected</span>
+    <div ng-repeat="diamond in diamonds track by $index" ng-init="diamond.svgID = getRandId()">
+        <div index="{{$index}}" length="{{diamonds.length}}" name="diamonds" ng-attr-style="color:{{diamond.material.color.getStyle()}};" class="saturate" item>
+                <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                width="50px" height="50px" viewBox="0 0 512 512">
+                    <defs> 
+                        <pattern id="{{diamond.svgID}}" patternUnits="userSpaceOnUse" width="250" height="250">
+                            <rect class="blankPattern" height="100%" width="100%" fill="currentColor"/>
+                            <image ng-attr-style="opacity: {{diamond.svgOPACITY}};" href="{{diamond.svgIMG}}" x="0" y="0" width="750" height="750"> </image> 
+                        </pattern> 
+                    </defs>
+                    <g>
+                        <path class="pathClass" fill="url(#{{diamond.svgID}})" d="M256,0L96,256l160,256l160-256L256,0z"/>
+                    </g>
+                </svg>
+        </div>
+    </div>
+</div>

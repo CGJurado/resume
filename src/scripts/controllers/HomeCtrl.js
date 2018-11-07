@@ -6,7 +6,10 @@ angular.module('myApp')
     '$document',
     'customSceneFactory',
     'meshFactory',
-    function($scope, sceneFactory, helper, $document, customSceneFactory, meshFactory){
+    '$mdDialog',
+    '$transitions',
+    '$state',
+    function($scope, sceneFactory, helper, $document, customSceneFactory, meshFactory, $mdDialog, $transitions, $state){
 
         $scope.spades = [];
         $scope.hearts = [];
@@ -21,6 +24,36 @@ angular.module('myApp')
         var currentSideIndex = 0;
         var customContainer = $document[0].querySelector('.customBox');
         var customMesh;
+
+        if($state.$current.name == 'app.aboutme'){
+            sceneFactory.stopRender();
+            $scope.outerCubeCSS = {
+                '-webkit-transform':'rotateY(90deg)',
+                '-moz-transform':'rotateY(90deg)',
+                '-o-transform':'rotateY(90deg)',
+                'transform':'rotateY(90deg)'
+            };
+        }
+        $transitions.onBefore({ to: 'app.aboutme' }, function(transition) {
+            customSceneFactory.stopRender();
+            $scope.outerCubeCSS = {
+                '-webkit-transform':'rotateY(90deg)',
+                '-moz-transform':'rotateY(90deg)',
+                '-o-transform':'rotateY(90deg)',
+                'transform':'rotateY(90deg)'
+            };
+        });
+        $transitions.onSuccess({ to: 'app' }, function(transition) {
+            if($scope.beenCustomized)
+                customSceneFactory.render();
+
+            $scope.outerCubeCSS = {
+                '-webkit-transform':'rotateY(0deg)',
+                '-moz-transform':'rotateY(0deg)',
+                '-o-transform':'rotateY(0deg)',
+                'transform':'rotateY(0deg)'
+            };
+        });
         
         // instantiate a texture loader
         var loader = new THREE.TextureLoader();
@@ -53,7 +86,7 @@ angular.module('myApp')
                 $scope.selectedItem = $scope.sides[currentSideIndex].name;
             }
 
-            $scope.calendarCSS = {
+            $scope.cubeCSS = {
                 '-webkit-transform':'rotateY('+ (currentCubeRotation) +'deg)',
                 '-moz-transform':'rotateY('+ (currentCubeRotation) +'deg)',
                 '-o-transform':'rotateY('+ (currentCubeRotation) +'deg)',
@@ -67,6 +100,12 @@ angular.module('myApp')
             $scope.sliderColor.red = mesh.material.color.r * 255;
             $scope.sliderColor.green = mesh.material.color.g * 255;
             $scope.sliderColor.blue = mesh.material.color.b * 255;
+
+            for(let i = 0; i < $scope.textures.length; i++){
+                if(i !== mesh.textureIndex)
+                    $scope.textures[i].selected = false;
+            }
+            $scope.textures[mesh.textureIndex].selected = true;
 
         }
 
@@ -138,7 +177,7 @@ angular.module('myApp')
             $scope.$apply();
         };
 
-        $scope.addCustomMesh = function(meshInfo){
+        $scope.addMeshToCustomScene = function(meshInfo){
             
             if($scope.beenCustomized){
                 helper.showToast("There's already a Mesh been Customized!");
@@ -148,10 +187,10 @@ angular.module('myApp')
                 if(typeof customMesh.isCustom === 'undefined'){
                     customMesh.material = meshFactory.getCustomMaterial(customMesh.name);
                     customMesh.svgIMG = $scope.textures[0].img;
+                    customMesh.svgOPACITY = 0;
+                    customMesh.textureIndex = 0;
                     customMesh.isCustom = true;
                 }
-
-                console.log(customMesh);
 
                 customSceneFactory.add(customMesh);
 
@@ -161,9 +200,19 @@ angular.module('myApp')
                 $scope[meshInfo.type].splice(meshInfo.index, 1);
 
                 $scope.beenCustomized = true;
+                customSceneFactory.render();
                 $scope.$apply();
             }
             
+        };
+
+        $scope.showSlidersDialog = function(ev){
+            helper.showSlidersDialog(ev, customMesh).then(function(answer) {
+                $scope.sliderSize = answer.size;
+                $scope.sliderColor = answer.color;
+            }, function() {
+                setPropertiesFromMesh(customMesh);
+            });
         };
 
         $scope.$watch('sliderSize', function(value){
@@ -198,21 +247,78 @@ angular.module('myApp')
         });
 
         $scope.saveCustomMesh = function(){
+            
+            customMesh.svgOPACITY = $scope.textures[customMesh.textureIndex].opacity;
+            
+            if(customMesh.textureIndex !== 0){
+                customMesh.svgOPACITY += 0.25*customMesh.material.color.g;
+                customMesh.svgOPACITY += 0.1*customMesh.material.color.r;
+            }
+
             customSceneFactory.del(customMesh);
             $scope.$broadcast(customMesh.name, {value: customMesh});
             $scope.beenCustomized = false;
+            customSceneFactory.stopRender();
+        };
+
+        
+        $scope.showTexturesDialog = function(ev){
+            $mdDialog.show({
+                locals: {textures: $scope.textures, customMesh: customMesh},
+                controller: TexDialogCtrl,
+                templateUrl: './dialog-textures.html',
+                parent: angular.element(document.body),
+                targetEvent: ev,
+                clickOutsideToClose:true,
+                escapeToClose: true,
+                hasBackdrop: false
+            });
+        };
+
+        var TexDialogCtrl = function($scope, meshFactory, textures, customMesh){
+            $scope.textures = textures;
+                        
+            $scope.applyTexture = function(index){
+                for(let i = 0; i < $scope.textures.length; i++){
+                    if(i !== index)
+                        $scope.textures[i].selected = false;
+                }
+                $scope.textures[index].selected = true;
+                
+                customMesh.material.map = meshFactory.getCustomTexture(index);
+                customMesh.svgIMG = $scope.textures[index].img;
+                customMesh.textureIndex = index;
+                customMesh.material.map.needsUpdate = true;
+            };
+
+            $scope.apply = function(){
+                $mdDialog.hide();
+            }
         };
 
         $scope.applyCustomTexture = function(index){
-            
+            for(let i = 0; i < $scope.textures.length; i++){
+                if(i !== index)
+                    $scope.textures[i].selected = false;
+            }
             $scope.textures[index].selected = true;
+            
             customMesh.material.map = meshFactory.getCustomTexture(index);
             customMesh.svgIMG = $scope.textures[index].img;
+            customMesh.textureIndex = index;
             customMesh.material.map.needsUpdate = true;
         };
 
         customSceneFactory.init(customContainer);
         customSceneFactory.add(meshFactory.helperCude());
-        customSceneFactory.render();
+        // customSceneFactory.render();
+
+        $scope.detail = {
+            who: 'Carlos Grisanty',
+            what: 'Web Developer',
+            exp: 'I have three years of working experience developing Web applications and Hybrid mobile applications in full Javascript.',
+            notes: "I made this page in my free time without any real purpose but to satisfy my own goals, it can be considered as a personal project.",
+            email: 'CGjurado@gmail.com'
+        }
     }
 ]);

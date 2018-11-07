@@ -18146,9 +18146,19 @@ body{
     /* background-color: #222222; */
     color: #e2e2e2;
 }
+.md-nav-bar{
+    border: none;
+}
 
+a{
+    color: #7777ad;
+}
 
 body.md-toast-animating{ overflow: visible!important }
+
+.menuButtons, .toastClass{
+    position: fixed!important;
+}
 
 .three {
     width:  100%;
@@ -18177,29 +18187,50 @@ body.md-toast-animating{ overflow: visible!important }
 }
 
 .itemBox{
-    background-color: #28292b;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    margin-top: 5px;
-    height: 79px;
+    /* background-color: #28292b; */
+    /* overflow-x: auto;
+    overflow: hidden; */
+    padding-top: 3px;
+    /* padding-bottom: 10px; */
+    /* height: 79px;
     border:2px solid #5a5856;
-    fill: currentColor!important;
+    fill: currentColor!important; */
 }
 
 .itemBox .saturate{
+    touch-action: none;
+    user-select: none;
+    -webkit-user-drag: none;
     position: relative;
     cursor: grab;
     height: 50px;
     width: 50px;
-    z-index: 60;
+    z-index: 999;
 }
 
-/* .checkerPattern{
-    fill: currentColor;
+.avatar{
+    text-transform: full-width;
+    text-align: start;
+    background-color: #5a5856;
+    padding: 1em;
 }
-.blankPattern{
-    fill: currentColor;
-} */
+.avatar img{
+    width: 12em;
+    height: 12em;
+    border-radius: 50%;
+}
+
+.customBtnTrigger{
+    margin: 0;
+    min-width: 55px!important;
+}
+
+.customContainer{
+    overflow-x: auto;
+}
+.customContainer > .flex{
+    min-width: 250px;
+}
 
 .customBox{
     background-color: #28292b;
@@ -18212,26 +18243,48 @@ body.md-toast-animating{ overflow: visible!important }
     border-style: dashed;
 }
 
-.cubeContainer{
-    width:120px;
-    height:55px;
+.cubeSection, .cubeScene, .cubeHome{
+    width:100%;
     position:relative;
-    margin:0 auto 10px;
     -webkit-perspective:1200px;
     -moz-perspective:1200px;
     -o-perspective:1200px;
-    perspective:1200px
+    perspective:1200px;
+}
+
+.cubeSection{    
+    height:57px;
+    margin:0 auto 10px;
+}
+.cubeScene{    
+    height:50vh;
+    margin:0 auto 0;
+}
+.cubeHome{    
+    height:40vh;
+    margin:0 auto 0;
+}
+
+#cubeContainer{
+    height:100%;
+    width:100%;
+    position:relative;
+    -webkit-transform-style:preserve-3d;
+    -moz-transform-style:preserve-3d;
+    -o-transform-style:preserve-3d;
+    transform-style:preserve-3d;
 }
 
 #cube,#cube figure{
     position:absolute;
     height:100%;
-    width:100%
+    width:100%;
 }
 #cube figure{
     font-size:14px;
     text-align:center;
 }
+
 
 #cube{
     -webkit-transform-style:preserve-3d;
@@ -18246,11 +18299,15 @@ body.md-toast-animating{ overflow: visible!important }
 
 #cube figure{
     display:block;
+    margin:0 0 0;
+}
+
+.cubeBorders figure{
     border:2px solid #5a5856;
     line-height:55px;
     color:#bdb7ac;
     margin:0 0 15px;
-    background-color:#28292b
+    background-color:#323335
 }
 
 #cube.panels-backface-invisible figure{
@@ -18261,29 +18318,53 @@ body.md-toast-animating{ overflow: visible!important }
 }
 
 #cube .m1{
-    -webkit-transform:rotateY(0) translateZ(60px);
-    -moz-transform:rotateY(0) translateZ(60px);
-    -o-transform:rotateY(0) translateZ(60px);
-    transform:rotateY(0) translateZ(60px)
+    -webkit-transform:rotateY(0) translateZ(250px);
+    -moz-transform:rotateY(0) translateZ(250px);
+    -o-transform:rotateY(0) translateZ(250px);
+    transform:rotateY(0) translateZ(250px)
 }
 
 #cube .m2{
-    -webkit-transform:rotateY(90deg) translateZ(60px);
-    -moz-transform:rotateY(90deg) translateZ(60px);
-    -o-transform:rotateY(90deg) translateZ(60px);
-    transform:rotateY(90deg) translateZ(60px)
+    -webkit-transform:rotateY(90deg) translateZ(250px);
+    -moz-transform:rotateY(90deg) translateZ(250px);
+    -o-transform:rotateY(90deg) translateZ(250px);
+    transform:rotateY(90deg) translateZ(250px)
 }
 
 #cube .m3{
-    -webkit-transform:rotateY(180deg) translateZ(60px);
-    -moz-transform:rotateY(180deg) translateZ(60px);
-    -o-transform:rotateY(180deg) translateZ(60px);
-    transform:rotateY(180deg) translateZ(60px)
+    -webkit-transform:rotateY(180deg) translateZ(250px);
+    -moz-transform:rotateY(180deg) translateZ(250px);
+    -o-transform:rotateY(180deg) translateZ(250px);
+    transform:rotateY(180deg) translateZ(250px)
 }
 
 #cube .m4{
-    -webkit-transform:rotateY(270deg) translateZ(60px);
-    -moz-transform:rotateY(270deg) translateZ(60px);
-    -o-transform:rotateY(270deg) translateZ(60px);
-    transform:rotateY(270deg) translateZ(60px)
+    -webkit-transform:rotateY(270deg) translateZ(250px);
+    -moz-transform:rotateY(270deg) translateZ(250px);
+    -o-transform:rotateY(270deg) translateZ(250px);
+    transform:rotateY(270deg) translateZ(250px)
+}
+
+#redSlider .md-thumb:after, #redSlider .md-track-fill{
+    background-color: red !important;
+    border-color: red !important;
+}
+#redSlider .md-focus-thumb, #redSlider .md-focus-ring{
+    background-color: red;
+}
+
+#greenSlider .md-thumb:after, #greenSlider .md-track-fill{
+    background-color: green !important;
+    border-color: green !important;
+}
+#greenSlider .md-focus-thumb, #greenSlider .md-focus-ring{
+    background-color: green;
+}
+
+#blueSlider .md-thumb:after, #blueSlider .md-track-fill{
+    background-color: blue !important;
+    border-color: blue !important;
+}
+#blueSlider .md-focus-thumb, #blueSlider .md-focus-ring{
+    background-color: blue;
 }

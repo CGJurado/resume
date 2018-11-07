@@ -1,6 +1,19 @@
 
-<div scene-directive class="three">
-    <md-button ng-click="toggleFullscreen()" class="md-icon-button fullscreenBtn" ng-show="isMobile">
-        <md-icon md-svg-icon="images/icons/aspect_ratio.svg"></md-icon>
-    </md-button>
-</div>
+<section class="cubeScene">
+    <div id="cubeContainer">
+        <div id="cube" class="show-front panels-backface-invisible" ng-style="cubeCSS" ng-class="{'panels-backface-invisible': visibilityToggle}">
+            <figure cube-faces index="0" class="m1">
+                <div scene-directive class="three">
+                    <md-button ng-click="toggleFullscreen()" class="md-icon-button fullscreenBtn" ng-show="isMobile">
+                        <md-icon md-svg-icon="images/icons/aspect_ratio.svg"></md-icon>
+                    </md-button>
+                </div>                
+            </figure>
+            <figure cube-faces index="1" class="m2">
+                <div second-scene-directive class="three">
+
+                </div>                
+            </figure>
+        </div>
+    </div>
+</section>

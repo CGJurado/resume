@@ -1,0 +1,24 @@
+<div layout="row" ng-show="selectedItem == 'spade'">                
+    <span ng-if="spades.length == 0">No spades collected</span>
+    <div ng-repeat="spade in spades track by $index" ng-init="spade.svgID = getRandId()">
+        <div index="{{$index}}" length="{{spades.length}}" name="spades" ng-attr-style="color:{{spade.material.color.getStyle()}};" class="saturate" item>
+            <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+            width="50px" height="50px" viewBox="0 0 512 512">
+                <defs> 
+                    <pattern id="{{spade.svgID}}" patternUnits="userSpaceOnUse" width="250" height="250">
+                        <rect class="blankPattern" height="100%" width="100%" fill="currentColor"/>
+                        <image ng-attr-style="opacity: {{spade.svgOPACITY}};" href="{{spade.svgIMG}}" x="0" y="0" width="750" height="750"> </image> 
+                    </pattern> 
+                </defs>
+                <g>
+                    <path class="pathClass" fill="url(#{{spade.svgID}})" d="M302.728,390.351c16.49,15.934,26.368,25.759,55.905,24.541c43.494-1.783,83.871-25.459,106.364-62.729
+                    c38.78-64.247,17.576-128.53-23.702-166.824L272.705,6.528c-9.507-8.704-24.082-8.704-33.589,0L68.073,185.34
+                    c-40.13,37.226-57.256,99.037-23.729,161.483c21.283,39.645,61.767,66.357,106.726,68.087c29.281,1.121,40.801-8.66,57.759-24.488
+                    c4.458-4.167,11.767-1.033,11.767,5.076l0.009,29.987c0,16.172-4.228,32.071-12.253,46.115l-15.519,27.154
+                    c-3.354,5.888,0.892,13.206,7.671,13.206h110.813c6.78,0,11.034-7.318,7.671-13.206l-15.519-27.154
+                    c-8.024-14.045-12.244-29.943-12.244-46.115v-30.296C291.226,389.213,298.429,386.202,302.728,390.351"/>
+                </g>
+            </svg>    
+        </div>
+    </div>
+</div>

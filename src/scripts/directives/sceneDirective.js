@@ -10,7 +10,7 @@ angular.module('myApp')
             element.css({
                 height: $window.innerHeight/2
             })
-            console.log('winHeight: '+ $window.innerHeight);
+            
             sceneFactory.init(element[0]);
             sceneFactory.render();
 

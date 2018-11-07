@@ -1,0 +1,13 @@
+
+        <div flex layout="column" layout-align="center center">
+            <h3>Select a texture</h3>
+            <md-list flex>
+                <md-list-item ng-repeat="texture in textures track by $index" ng-click="applyTexture($index)" class="noright">
+                    <img alt="{{ texture.name }}" ng-src="{{ texture.img }}" class="md-avatar" />
+                    <p>{{ texture.name }}</p>
+                    <md-checkbox class="md-secondary" ng-model="texture.selected" ng-click="applyTexture($index)" aria-label="checkbox"></md-checkbox>
+                    <!-- <md-switch ng-disabled="!beenCustomized" ng-model="texture.selected" aria-label="switch" ng-click="applyCustomTexture($index)"></md-switch> -->
+                </md-list-item>
+            </md-list>
+            <md-button layout-fill class="md-primary md-raised md-hue-2" ng-click="apply()">Apply</md-button>
+        </div>
