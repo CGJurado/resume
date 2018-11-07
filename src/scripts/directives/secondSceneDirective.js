@@ -141,7 +141,7 @@ angular.module('myApp')
             plane2.castShadow = true;
 
             var geometry3 = new THREE.PlaneGeometry( 60, 60, 32 );
-            var material3 = new THREE.MeshPhongMaterial({ map: texLoader.load('./images/frontEnd-cert.jpg'), side: THREE.DoubleSide });
+            var material3 = new THREE.MeshPhongMaterial({ map: texLoader.load('./images/frontend-cert.jpg'), side: THREE.DoubleSide });
             var plane3 = new THREE.Mesh( geometry3, material3 );
             plane3.name = 'plane';
             plane3.position.x = 100;
