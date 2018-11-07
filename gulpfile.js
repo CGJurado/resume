@@ -1,5 +1,7 @@
 const gulp = require('gulp');
 const concat = require('gulp-concat');
+const uglify = require('gulp-uglify-es').default;
+var gutil = require('gulp-util');
 const browserSync = require('browser-sync').create();
 
 const scripts = require('./scripts');
@@ -20,6 +22,8 @@ gulp.task('css', () =>{
 gulp.task('js', () =>{
     gulp.src(scripts)
         .pipe(concat('main.js'))
+        .pipe(uglify())
+        .on('error', function (err) { gutil.log(gutil.colors.red('[Error]'), err.toString()); })
         .pipe(gulp.dest('./dist/scripts'))
         .pipe(browserSync.reload({
             stream: true

@@ -128,20 +128,20 @@ angular.module('myApp')
             scene.add( floor );
 
             var geometry1 = new THREE.PlaneGeometry( 60, 60, 32 );
-            var material1 = new THREE.MeshPhongMaterial({ map: texLoader.load('./images/angular-cert.png'), side: THREE.DoubleSide });
+            var material1 = new THREE.MeshPhongMaterial({ map: texLoader.load('./images/angular-cert.jpg'), side: THREE.DoubleSide });
             var plane1 = new THREE.Mesh( geometry1, material1 );
             plane1.name = 'plane';
             plane1.position.x = -100;
             plane1.castShadow = true;
 
             var geometry2 = new THREE.PlaneGeometry( 60, 60, 32 );
-            var material2 = new THREE.MeshPhongMaterial({ map: texLoader.load('./images/genomic-cert.png'), side: THREE.DoubleSide });
+            var material2 = new THREE.MeshPhongMaterial({ map: texLoader.load('./images/genomic-cert.jpg'), side: THREE.DoubleSide });
             var plane2 = new THREE.Mesh( geometry2, material2 );
             plane2.name = 'plane';
             plane2.castShadow = true;
 
             var geometry3 = new THREE.PlaneGeometry( 60, 60, 32 );
-            var material3 = new THREE.MeshPhongMaterial({ map: texLoader.load('./images/frontEnd-cert.png'), side: THREE.DoubleSide });
+            var material3 = new THREE.MeshPhongMaterial({ map: texLoader.load('./images/frontEnd-cert.jpg'), side: THREE.DoubleSide });
             var plane3 = new THREE.Mesh( geometry3, material3 );
             plane3.name = 'plane';
             plane3.position.x = 100;
