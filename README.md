@@ -1,6 +1,6 @@
 ## About this page
 This page uses Threejs framework along with angular framework and some additional plugins like:
-- [Material Design][MaterialDesign]
+- [Material Design](https://material.angularjs.org/)
 - [OrbitControls][OrbitControls]
 - [DeviceOrientationControls][DeviceOrientationControls]
 - [JQuery][JQuery]
